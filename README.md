@@ -16,31 +16,76 @@ ou rotinas de carga.
 .
 ├── backend/
 │   ├── app/
-│   │   ├── api/v1/        # ponto de composição dos futuros routers
-│   │   ├── core/          # configurações e logging
-│   │   ├── db/            # Base ORM, engine e sessões
-│   │   └── movies/        # modelos SQLAlchemy do domínio de filmes
-│   ├── migrations/        # ambiente e revisões Alembic
-│   └── tests/
+│   │   ├── api/v1/        # endpoints REST (/movies, /reviews, /genres)
+│   │   ├── core/          # configurações, CORS e logging
+│   │   ├── db/            # Base ORM, sessões assíncronas e carga de dados
+│   │   └── movies/        # modelos SQLAlchemy, schemas Pydantic e serviços
+│   ├── migrations/        # revisões Alembic
+│   └── tests/             # suíte de testes pytest
+├── frontend/
+│   ├── src/
+│   │   ├── api/           # clientes Axios tipados e serviços HTTP
+│   │   ├── components/    # componentes modulares (Navbar, MovieCard, Modais, etc.)
+│   │   ├── hooks/         # hooks customizados (useDebounce)
+│   │   ├── pages/         # CatalogPage, MovieDetailPage, MovieCreatePage, MovieEditPage
+│   │   └── types/         # interfaces TypeScript sincronizadas com o backend
+│   └── package.json
 └── README.md
 ```
 
 ## Execução
+
+### 1. Backend (FastAPI + SQLite)
 
 Requer Python 3.11 ou superior.
 
 ```bash
 cd backend
 python3 -m venv .venv
-.venv/bin/pip install -e ".[dev]"
+# Windows: .venv\Scripts\activate
+# Linux/macOS: source .venv/bin/activate
+pip install -e ".[dev]"
 cp .env.example .env
-.venv/bin/alembic upgrade head
-.venv/bin/uvicorn app.main:app --reload
+alembic upgrade head
+uvicorn app.main:app --reload
 ```
 
-A API mínima ficará disponível em `http://localhost:8000`; use
-`http://localhost:8000/docs` para a documentação automática. O endpoint
-`GET /health` permite conferir se a aplicação iniciou corretamente.
+A API ficará disponível em `http://localhost:8000`. Acesse `http://localhost:8000/docs` para a documentação interativa Swagger.
+
+Para rodar os testes do backend:
+```bash
+pytest
+```
+
+---
+
+### 2. Frontend (Vite + React + TypeScript + Tailwind)
+
+Requer Node.js 18 ou superior.
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+A aplicação web estará acessível em `http://localhost:5173`.
+
+Para rodar os testes automatizados do frontend (Vitest):
+```bash
+npm test
+```
+
+Para verificar a tipagem TypeScript:
+```bash
+npm run lint
+```
+
+Para gerar a build de produção:
+```bash
+npm run build
+```
+
 
 ## Banco de dados e migrações
 

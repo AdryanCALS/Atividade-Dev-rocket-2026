@@ -23,3 +23,8 @@ _Avoid_: Categoria, tag
 **Diretor / Pessoa**:
 Profissional associado a um filme com papel cadastrado na dimensão de pessoas, com destaque para a direção na criação básica de filmes.
 _Avoid_: Artista, criador, membro da equipe
+
+**Administrador**:
+Papel do usuário que opera o sistema com permissão para gerenciar o catálogo de filmes (criar, editar e remover) e registrar avaliações.
+_Avoid_: Admin, superusuário, operador, cliente
+
