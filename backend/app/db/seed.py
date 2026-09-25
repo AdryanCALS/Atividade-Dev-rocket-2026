@@ -210,7 +210,7 @@ async def run_seed(
             )
     if people_data:
         await execute_in_batches(
-            session, sqlite_insert(DimPerson).on_conflict_do_nothing(), people_data, label="Pessoas/Elenco"
+            session, sqlite_insert(DimPerson).on_conflict_do_nothing(), people_data, label="Pessoas"
         )
 
     # DimMovie

@@ -32,12 +32,18 @@ export const RatingBadge: React.FC<RatingBadgeProps> = ({
     lg: 18,
   }[size];
 
+  const tooltip = hasRating
+    ? showCount && typeof count === 'number'
+      ? `Média geral: ${currentNota!.toFixed(1)} de 10`
+      : `Nota: ${currentNota!.toFixed(1)} de 10`
+    : 'Sem avaliações';
+
   return (
     <div
       className={`inline-flex items-center font-medium rounded-full border ${getRatingColorClass(
         currentNota
       )} ${sizeClasses}`}
-      title={hasRating ? `Média geral: ${currentNota!.toFixed(1)} de 10` : 'Sem avaliações'}
+      title={tooltip}
     >
       <Star size={starSizes} className={hasRating ? 'fill-current' : 'text-slate-500'} />
       <span>{formatRating(currentNota)}</span>

@@ -30,7 +30,7 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({ review }) => {
           </div>
         </div>
 
-        <RatingBadge score={review.nota} size="sm" showCount={false} />
+        <RatingBadge nota={review.nota} size="sm" showCount={false} />
       </div>
 
       <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-line pl-0.5">

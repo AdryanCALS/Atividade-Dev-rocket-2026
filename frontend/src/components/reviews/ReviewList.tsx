@@ -7,13 +7,12 @@ import { Pagination } from '../common/Pagination';
 
 interface ReviewListProps {
   movieId: string;
-  movieTitle: string;
+  movieTitle?: string;
   onOpenReviewModal?: () => void;
 }
 
 export const ReviewList: React.FC<ReviewListProps> = ({
   movieId,
-  movieTitle: _movieTitle,
   onOpenReviewModal,
 }) => {
   const [page, setPage] = useState(1);

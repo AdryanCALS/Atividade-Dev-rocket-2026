@@ -27,6 +27,8 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
   const [comentario, setComentario] = useState('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const clampNota = (v: number) => Math.min(10, Math.max(0, v));
+
   const mutation = useMutation({
     mutationFn: (payload: ReviewCreate) => addReviewToMovie(movieId, payload),
     onSuccess: () => {
@@ -181,7 +183,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                   setNotaInput(str);
                   const val = parseFloat(str);
                   if (!isNaN(val)) {
-                    setNota(Math.min(10, Math.max(0, val)));
+                    setNota(clampNota(val));
                   }
                 }}
                 onBlur={() => {
@@ -190,7 +192,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                     setNota(8.0);
                     setNotaInput('8.0');
                   } else {
-                    const clamped = Math.min(10, Math.max(0, val));
+                    const clamped = clampNota(val);
                     setNota(clamped);
                     setNotaInput(String(clamped));
                   }
