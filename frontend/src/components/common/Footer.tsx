@@ -8,7 +8,7 @@ export const Footer: React.FC = () => {
           RocketLab 2026.2 • Sistema de Catálogo e Avaliação de Filmes
         </p>
         <p className="mt-1 text-xs text-visagio-muted">
-          Escala de avaliações de 0.0 a 10.0 • Administrador
+           Administrador
         </p>
       </div>
     </footer>

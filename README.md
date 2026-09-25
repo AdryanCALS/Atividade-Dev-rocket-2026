@@ -1,14 +1,14 @@
-# RocketLab 2026.2 — repositório base
+# RocketLab 2026.2 — Catálogo e Gestão de Filmes
 
-Base inicial para evoluir a atividade do RocketLab 2026.2. Ela preserva a organização do backend,
-o modelo relacional do catálogo de filmes em SQLAlchemy 2.0 e o histórico de
-migrações com Alembic, sem incluir interface, dados CSV, endpoints de negócio
-ou rotinas de carga.
+Aplicação full-stack desenvolvida para a atividade técnica do RocketLab 2026.2. O sistema é composto por uma API REST robusta em **FastAPI (Python)** com persistência em **SQLite (SQLAlchemy 2.0 + Alembic)** e uma interface moderna e responsiva construída em **Vite + React + TypeScript + Tailwind CSS**, implementando a identidade visual **Light da Visagio** (inspirada no [v-dev.io](https://v-dev.io)).
 
-> **Nota:** `RocketLab` é apenas o nome de referência desta base. O diretório,
-> nome do pacote, título da API e arquivo do banco podem ser renomeados para o
-> que preferirem; eles não representam uma exigência da
-> estrutura-base.
+O sistema atende a todos os requisitos do desafio técnico:
+- **Navegação em catálogo paginado** com ordenação (ano de lançamento, título, nota média);
+- **Barra de busca com debounce** para pesquisa em tempo real por título, diretor, gênero ou sinopse;
+- **Detalhamento completo do filme**, exibindo sinopse, elenco/direção, métricas financeiras (orçamento, receita, lucro), notas externas (TMDB, IMDb) e histórico de avaliações;
+- **Gerenciamento de filmes (CRUD)**: cadastro, edição e exclusão individual de filmes pelo Administrador;
+- **Avaliações e resenhas**: adição de novas avaliações com seletor interativo de 1 a 5 estrelas, ajuste fino decimal (escala de 0.0 a 10.0) e cálculo automático da nota média;
+- **Rotina de carga (Seed)** com suporte a amostra (ex: 100 filmes) ou carga completa de toda a base CSV (~95.000 títulos).
 
 ## Estrutura
 
@@ -114,23 +114,30 @@ O modelo usa um esquema estrela para o catálogo de filmes:
 - fato de desempenho financeiro e de engajamento;
 - tabelas de associação N:N entre filmes, gêneros, produtoras e pessoas;
 
-O schema corresponde aos nove arquivos CSV atuais da camada Diamond, com a
-adição de `movie_reviews`: uma avaliação individual por linha, na escala 0–10.
-A tabela aceita diretamente as colunas `sk_movie_review_id`, `sk_movie_id`,
-`nome`, `nota` e `comentario` do CSV enviado separadamente. `created_at` é
-gerado pelo banco. O contexto generativo não faz parte desta base.
+O schema corresponde aos arquivos CSV da camada de dados (`data/`), com a adição da tabela de avaliações individuais (`dim_movie_reviews`), operando na escala oficial de 0.0 a 10.0 (consulte [ADR 0001](docs/adr/0001-rating-scale-and-identifier-resolution.md)).
 
-O repositório não inclui CSVs nem rotinas de carga. Para usar avaliações,
-importe primeiro os filmes em `dim_movies` e depois o CSV de `movie_reviews`.
+Para popular o banco com os dados dos arquivos CSV da pasta `data/`, utilize a rotina de seed descrita na seção de execução (`python -m app.db.seed`).
 
-As tabelas são criadas exclusivamente pelo Alembic. Para evoluir os modelos,
-crie uma revisão e aplique-a:
+As tabelas são gerenciadas exclusivamente pelo Alembic. Para evoluir os modelos, crie uma revisão e aplique-a:
 
 ```bash
 cd backend
-.venv/bin/alembic revision --autogenerate -m "descreva a alteração"
-.venv/bin/alembic upgrade head
+alembic revision --autogenerate -m "descreva a alteração"
+alembic upgrade head
 ```
 
-O banco padrão é SQLite local em `backend/rocketlab.db`. Ajuste
-`DATABASE_URL` no arquivo `.env` para usar outro banco compatível.
+O banco padrão é SQLite local em `backend/rocketlab.db`. Ajuste `DATABASE_URL` no arquivo `.env` para usar outro banco compatível.
+
+---
+
+## Identidade Visual & Design System
+
+A aplicação frontend adota a identidade visual **Light da Visagio** (inspirada no [v-dev.io](https://v-dev.io)), com padrões de acessibilidade WCAG AAA:
+
+- **Canvas Principal**: `#F4F4F4` (aparência *light*, limpa e contemporânea)
+- **Preto Estrutural & Texto**: `#0F0E0E` (máximo contraste para títulos e corpo de texto)
+- **Amarelo Destaque (Accent)**: `#FFD45A` (botões primários, estrelas, focus rings e seleções)
+- **Superfícies (Cards & Modais)**: `#FFFFFF` com bordas sutis `#E5E5E5` e sombras suaves
+- **Alertas & Ações Críticas**: Tom semântico rose (`#E11D48`) para exclusões irreversíveis e mensagens de erro
+
+Para detalhes técnicos e decisões de design, consulte o [ADR 0002](docs/adr/0002-visagio-light-palette-and-design-system.md).
