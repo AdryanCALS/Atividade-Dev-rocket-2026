@@ -1,0 +1,5 @@
+# 0001: Escala de Avaliação de 0 a 10 e Resolução Híbrida de Identificadores
+
+O documento de especificação inicial indicava uma escala de avaliação de 1 a 5 estrelas. No entanto, os modelos pré-existentes do SQLAlchemy e a tabela `movie_reviews` já possuem restrições de validação para a escala de 0 a 10 (`CheckConstraint("nota >= 0 AND nota <= 10")`), condizente com a base histórica dos arquivos CSV fornecidos em `data/`. Decidimos, conforme alinhamento com a mentoria, adotar estritamente a escala de 0.0 a 10.0 em toda a camada de backend e persistência, deixando a representação visual de estrelas (se desejada) sob responsabilidade do frontend via proporção.
+
+Adicionalmente, como o esquema estrela utiliza chaves substitutas SHA-256 (`sk_movie_id`) para relacionamentos relacionais enquanto a base de catálogo possui o identificador de negócio `id_filme`, decidimos que as rotas da API aceitarão qualquer um dos identificadores de forma transparente para simplificar o consumo pelo frontend.
