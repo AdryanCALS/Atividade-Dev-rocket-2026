@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, User, Film, Edit3, Trash2, MessageSquarePlus } from 'lucide-react';
+import { Clock, User, Film, Edit3, Trash2, MessageSquarePlus, Calendar } from 'lucide-react';
 import { MovieDetailResponse } from '../../types';
 import { RatingBadge } from '../common/RatingBadge';
+import { getMovieId, formatDate } from '../../utils/movie';
 
 interface MovieHeroProps {
   movie: MovieDetailResponse;
@@ -16,7 +17,7 @@ export const MovieHero: React.FC<MovieHeroProps> = ({
   onOpenDeleteModal,
 }) => {
   const [posterError, setPosterError] = useState(false);
-  const movieId = movie.id_filme || movie.sk_movie_id;
+  const movieId = getMovieId(movie);
 
   const formatDuration = (minutos: number | null | undefined) => {
     if (!minutos) return null;
@@ -83,6 +84,13 @@ export const MovieHero: React.FC<MovieHeroProps> = ({
                 </span>
               )}
 
+              {movie.data_lancamento && (
+                <span className="flex items-center gap-1.5 text-slate-300">
+                  <Calendar size={14} className="text-emerald-400" />
+                  <span>Lançamento: {formatDate(String(movie.data_lancamento))}</span>
+                </span>
+              )}
+
               {movie.duracao_minutos && (
                 <span className="flex items-center gap-1 text-slate-400">
                   <Clock size={14} />
@@ -115,7 +123,7 @@ export const MovieHero: React.FC<MovieHeroProps> = ({
           {/* Resumo da Avaliação */}
           <div className="pt-2 flex flex-wrap items-center gap-3">
             <RatingBadge
-              score={movie.reviews_summary?.nota_media_usuarios}
+              nota={movie.reviews_summary?.nota_media_usuarios}
               count={movie.reviews_summary?.qtd_avaliacoes_usuarios}
               size="lg"
             />

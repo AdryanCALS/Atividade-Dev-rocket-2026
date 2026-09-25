@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Film } from 'lucide-react';
 import { MovieListItem } from '../../types';
 import { RatingBadge } from '../common/RatingBadge';
+import { getMovieId } from '../../utils/movie';
 
 interface MovieCardProps {
   movie: MovieListItem;
@@ -10,7 +11,7 @@ interface MovieCardProps {
 
 export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
   const [imageError, setImageError] = useState(false);
-  const movieId = movie.id_filme || movie.sk_movie_id;
+  const movieId = getMovieId(movie);
 
   return (
     <Link
@@ -39,7 +40,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
         {/* Rating Floating Badge */}
         <div className="absolute top-2 right-2 drop-shadow-md">
           <RatingBadge
-            score={movie.reviews_summary?.nota_media_usuarios}
+            nota={movie.reviews_summary?.nota_media_usuarios}
             count={movie.reviews_summary?.qtd_avaliacoes_usuarios}
             size="sm"
             showCount={false}

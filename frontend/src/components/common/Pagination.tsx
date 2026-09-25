@@ -7,6 +7,7 @@ interface PaginationProps {
   totalItems: number;
   pageSize: number;
   onPageChange: (newPage: number) => void;
+  itemLabel?: string;
 }
 
 export const Pagination: React.FC<PaginationProps> = ({
@@ -15,6 +16,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   totalItems,
   pageSize,
   onPageChange,
+  itemLabel = 'filmes',
 }) => {
   if (totalPages <= 1) return null;
 
@@ -55,7 +57,7 @@ export const Pagination: React.FC<PaginationProps> = ({
       <div className="text-slate-400">
         Mostrando <span className="font-semibold text-slate-200">{inicio}</span> a{' '}
         <span className="font-semibold text-slate-200">{fim}</span> de{' '}
-        <span className="font-semibold text-slate-200">{totalItems}</span> filmes
+        <span className="font-semibold text-slate-200">{totalItems}</span> {itemLabel}
       </div>
 
 

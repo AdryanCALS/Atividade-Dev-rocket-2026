@@ -13,6 +13,19 @@ interface MovieFormProps {
   onCancel: () => void;
 }
 
+interface MovieFormData {
+  titulo: string;
+  diretor: string;
+  ano_lancamento: string;
+  data_lancamento: string;
+  duracao_minutos: string;
+  status_filme: string;
+  sinopse: string;
+  url_poster: string;
+  url_backdrop: string;
+  generos: string[];
+}
+
 export const MovieForm: React.FC<MovieFormProps> = ({
   initialValues,
   onSubmit,
@@ -21,22 +34,25 @@ export const MovieForm: React.FC<MovieFormProps> = ({
   submitButtonText = 'Salvar Filme',
   onCancel,
 }) => {
-  const [titulo, setTitulo] = useState(initialValues?.titulo || '');
-  const [diretor, setDiretor] = useState(initialValues?.diretor || '');
-  const [anoLancamento, setAnoLancamento] = useState<string>(
-    initialValues?.ano_lancamento ? String(initialValues.ano_lancamento) : ''
-  );
-  const [dataLancamento, setDataLancamento] = useState(initialValues?.data_lancamento || '');
-  const [duracaoMinutos, setDuracaoMinutos] = useState<string>(
-    initialValues?.duracao_minutos ? String(initialValues.duracao_minutos) : ''
-  );
-  const [statusFilme, setStatusFilme] = useState(initialValues?.status_filme || 'Lançado');
-  const [sinopse, setSinopse] = useState(initialValues?.sinopse || '');
-  const [urlPoster, setUrlPoster] = useState(initialValues?.url_poster || '');
-  const [urlBackdrop, setUrlBackdrop] = useState(initialValues?.url_backdrop || '');
-  const [selectedGeneros, setSelectedGeneros] = useState<string[]>(initialValues?.generos || []);
+  const [formData, setFormData] = useState<MovieFormData>(() => ({
+    titulo: initialValues?.titulo || '',
+    diretor: initialValues?.diretor || '',
+    ano_lancamento: initialValues?.ano_lancamento ? String(initialValues.ano_lancamento) : '',
+    data_lancamento: initialValues?.data_lancamento || '',
+    duracao_minutos: initialValues?.duracao_minutos ? String(initialValues.duracao_minutos) : '',
+    status_filme: initialValues?.status_filme || 'Lançado',
+    sinopse: initialValues?.sinopse || '',
+    url_poster: initialValues?.url_poster || '',
+    url_backdrop: initialValues?.url_backdrop || '',
+    generos: initialValues?.generos || [],
+  }));
+
   const [newGenreInput, setNewGenreInput] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  const updateField = <K extends keyof MovieFormData>(field: K, value: MovieFormData[K]) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   // Busca gêneros cadastrados na base de dados
   const { data: availableGenres } = useQuery({
@@ -45,25 +61,25 @@ export const MovieForm: React.FC<MovieFormProps> = ({
   });
 
   const toggleGenre = (genreName: string) => {
-    if (selectedGeneros.includes(genreName)) {
-      setSelectedGeneros(selectedGeneros.filter((g) => g !== genreName));
-    } else {
-      setSelectedGeneros([...selectedGeneros, genreName]);
-    }
+    const isSelected = formData.generos.includes(genreName);
+    updateField(
+      'generos',
+      isSelected ? formData.generos.filter((g) => g !== genreName) : [...formData.generos, genreName]
+    );
   };
 
   const handleAddNewGenre = () => {
     const trimmed = newGenreInput.trim();
     if (!trimmed) return;
-    if (!selectedGeneros.includes(trimmed)) {
-      setSelectedGeneros([...selectedGeneros, trimmed]);
+    if (!formData.generos.includes(trimmed)) {
+      updateField('generos', [...formData.generos, trimmed]);
     }
     setNewGenreInput('');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!titulo.trim()) {
+    if (!formData.titulo.trim()) {
       setValidationError('O título do filme é obrigatório.');
       return;
     }
@@ -71,16 +87,16 @@ export const MovieForm: React.FC<MovieFormProps> = ({
     setValidationError(null);
 
     const payload: MovieCreate = {
-      titulo: titulo.trim(),
-      diretor: diretor.trim() || null,
-      ano_lancamento: anoLancamento ? parseInt(anoLancamento, 10) : null,
-      data_lancamento: dataLancamento || null,
-      duracao_minutos: duracaoMinutos ? parseInt(duracaoMinutos, 10) : null,
-      status_filme: statusFilme || 'Lançado',
-      sinopse: sinopse.trim() || null,
-      url_poster: urlPoster.trim() || null,
-      url_backdrop: urlBackdrop.trim() || null,
-      generos: selectedGeneros,
+      titulo: formData.titulo.trim(),
+      diretor: formData.diretor.trim() || null,
+      ano_lancamento: formData.ano_lancamento ? parseInt(formData.ano_lancamento, 10) : null,
+      data_lancamento: formData.data_lancamento || null,
+      duracao_minutos: formData.duracao_minutos ? parseInt(formData.duracao_minutos, 10) : null,
+      status_filme: formData.status_filme || 'Lançado',
+      sinopse: formData.sinopse.trim() || null,
+      url_poster: formData.url_poster.trim() || null,
+      url_backdrop: formData.url_backdrop.trim() || null,
+      generos: formData.generos,
     };
 
     onSubmit(payload);
@@ -107,8 +123,8 @@ export const MovieForm: React.FC<MovieFormProps> = ({
               type="text"
               required
               maxLength={500}
-              value={titulo}
-              onChange={(e) => setTitulo(e.target.value)}
+              value={formData.titulo}
+              onChange={(e) => updateField('titulo', e.target.value)}
               placeholder="Ex: O Poderoso Chefão"
               className="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
             />
@@ -122,8 +138,8 @@ export const MovieForm: React.FC<MovieFormProps> = ({
               <input
                 id="movie-director"
                 type="text"
-                value={diretor}
-                onChange={(e) => setDiretor(e.target.value)}
+                value={formData.diretor}
+                onChange={(e) => updateField('diretor', e.target.value)}
                 placeholder="Ex: Francis Ford Coppola"
                 className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
               />
@@ -135,8 +151,8 @@ export const MovieForm: React.FC<MovieFormProps> = ({
               </label>
               <select
                 id="movie-status"
-                value={statusFilme}
-                onChange={(e) => setStatusFilme(e.target.value)}
+                value={formData.status_filme}
+                onChange={(e) => updateField('status_filme', e.target.value)}
                 className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:outline-none focus:border-emerald-500 text-sm"
               >
                 <option value="Lançado">Lançado</option>
@@ -157,8 +173,8 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                 type="number"
                 min="1880"
                 max="2100"
-                value={anoLancamento}
-                onChange={(e) => setAnoLancamento(e.target.value)}
+                value={formData.ano_lancamento}
+                onChange={(e) => updateField('ano_lancamento', e.target.value)}
                 placeholder="Ex: 1972"
                 className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
               />
@@ -171,8 +187,8 @@ export const MovieForm: React.FC<MovieFormProps> = ({
               <input
                 id="movie-date"
                 type="date"
-                value={dataLancamento}
-                onChange={(e) => setDataLancamento(e.target.value)}
+                value={formData.data_lancamento}
+                onChange={(e) => updateField('data_lancamento', e.target.value)}
                 className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:outline-none focus:border-emerald-500 text-sm"
               />
             </div>
@@ -186,8 +202,8 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                 type="number"
                 min="1"
                 max="1000"
-                value={duracaoMinutos}
-                onChange={(e) => setDuracaoMinutos(e.target.value)}
+                value={formData.duracao_minutos}
+                onChange={(e) => updateField('duracao_minutos', e.target.value)}
                 placeholder="Ex: 175"
                 className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
               />
@@ -201,8 +217,8 @@ export const MovieForm: React.FC<MovieFormProps> = ({
             <textarea
               id="movie-synopsis"
               rows={4}
-              value={sinopse}
-              onChange={(e) => setSinopse(e.target.value)}
+              value={formData.sinopse}
+              onChange={(e) => updateField('sinopse', e.target.value)}
               placeholder="Descreva a história e premissa principal do filme..."
               className="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm resize-y"
             />
@@ -214,9 +230,9 @@ export const MovieForm: React.FC<MovieFormProps> = ({
               Gêneros do Filme
             </label>
 
-            {/* Tags Selecionadas */}
+            {/* Gêneros Selecionados */}
             <div className="flex flex-wrap gap-2 min-h-8">
-              {selectedGeneros.map((gen) => (
+              {formData.generos.map((gen) => (
                 <span
                   key={gen}
                   className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
@@ -232,7 +248,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                   </button>
                 </span>
               ))}
-              {selectedGeneros.length === 0 && (
+              {formData.generos.length === 0 && (
                 <span className="text-xs text-slate-500 italic">
                   Nenhum gênero selecionado ainda.
                 </span>
@@ -245,7 +261,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                 <span className="text-[11px] text-slate-400 font-medium">Gêneros existentes (clique para alternar):</span>
                 <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-1 rounded-lg bg-slate-950/60 border border-slate-800">
                   {availableGenres.map((g) => {
-                    const isSelected = selectedGeneros.includes(g.nome_genero);
+                    const isSelected = formData.generos.includes(g.nome_genero);
                     return (
                       <button
                         key={g.sk_genre_id}
@@ -304,8 +320,8 @@ export const MovieForm: React.FC<MovieFormProps> = ({
             <input
               id="movie-poster-url"
               type="url"
-              value={urlPoster}
-              onChange={(e) => setUrlPoster(e.target.value)}
+              value={formData.url_poster}
+              onChange={(e) => updateField('url_poster', e.target.value)}
               placeholder="https://.../poster.jpg"
               className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-xs"
             />
@@ -318,8 +334,8 @@ export const MovieForm: React.FC<MovieFormProps> = ({
             <input
               id="movie-backdrop-url"
               type="url"
-              value={urlBackdrop}
-              onChange={(e) => setUrlBackdrop(e.target.value)}
+              value={formData.url_backdrop}
+              onChange={(e) => updateField('url_backdrop', e.target.value)}
               placeholder="https://.../backdrop.jpg"
               className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-xs"
             />
@@ -329,9 +345,9 @@ export const MovieForm: React.FC<MovieFormProps> = ({
           <div className="pt-2">
             <span className="block text-[11px] text-slate-500 mb-2">Pré-visualização do Pôster:</span>
             <div className="w-36 aspect-[2/3] mx-auto rounded-xl overflow-hidden bg-slate-950 border border-slate-800 flex items-center justify-center">
-              {urlPoster ? (
+              {formData.url_poster ? (
                 <img
-                  src={urlPoster}
+                  src={formData.url_poster}
                   alt="Pré-visualização do pôster"
                   className="w-full h-full object-cover"
                   onError={(e) => {

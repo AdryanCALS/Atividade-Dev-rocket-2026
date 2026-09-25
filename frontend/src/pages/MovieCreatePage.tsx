@@ -5,6 +5,7 @@ import { ArrowLeft, Film } from 'lucide-react';
 import { createMovie } from '../api/movies';
 import { MovieForm } from '../components/movies/MovieForm';
 import { MovieCreate } from '../types';
+import { getMovieId } from '../utils/movie';
 
 export const MovieCreatePage: React.FC = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export const MovieCreatePage: React.FC = () => {
     mutationFn: (payload: MovieCreate) => createMovie(payload),
     onSuccess: (createdMovie) => {
       queryClient.invalidateQueries({ queryKey: ['movies'] });
-      const targetId = createdMovie.id_filme || createdMovie.sk_movie_id;
+      const targetId = getMovieId(createdMovie);
       navigate(`/filmes/${targetId}`);
     },
   });

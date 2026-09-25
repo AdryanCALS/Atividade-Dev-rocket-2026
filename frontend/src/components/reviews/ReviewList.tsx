@@ -3,17 +3,20 @@ import { useQuery } from '@tanstack/react-query';
 import { MessageSquarePlus, MessageSquare } from 'lucide-react';
 import { getReviewsByMovie } from '../../api/reviews';
 import { ReviewItem } from './ReviewItem';
-import { ReviewModal } from './ReviewModal';
 import { Pagination } from '../common/Pagination';
 
 interface ReviewListProps {
   movieId: string;
   movieTitle: string;
+  onOpenReviewModal?: () => void;
 }
 
-export const ReviewList: React.FC<ReviewListProps> = ({ movieId, movieTitle }) => {
+export const ReviewList: React.FC<ReviewListProps> = ({
+  movieId,
+  movieTitle: _movieTitle,
+  onOpenReviewModal,
+}) => {
   const [page, setPage] = useState(1);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ['reviews', movieId, page],
@@ -33,13 +36,15 @@ export const ReviewList: React.FC<ReviewListProps> = ({ movieId, movieTitle }) =
           </p>
         </div>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition shadow-md shadow-emerald-500/20"
-        >
-          <MessageSquarePlus size={16} />
-          <span>Escrever Avaliação</span>
-        </button>
+        {onOpenReviewModal && (
+          <button
+            onClick={onOpenReviewModal}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition shadow-md shadow-emerald-500/20"
+          >
+            <MessageSquarePlus size={16} />
+            <span>Escrever Avaliação</span>
+          </button>
+        )}
       </div>
 
       {isLoading ? (
@@ -60,6 +65,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({ movieId, movieTitle }) =
             totalItems={data.total}
             pageSize={data.page_size}
             onPageChange={(p) => setPage(p)}
+            itemLabel="avaliações"
           />
         </div>
       ) : (
@@ -70,22 +76,16 @@ export const ReviewList: React.FC<ReviewListProps> = ({ movieId, movieTitle }) =
             Seja o primeiro a compartilhar uma nota de 0 a 10 e sua resenha!
           </p>
 
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="mt-4 px-4 py-2 text-xs font-semibold rounded-lg bg-slate-800 text-emerald-400 hover:bg-slate-700 transition"
-          >
-            Adicionar primeira avaliação
-          </button>
+          {onOpenReviewModal && (
+            <button
+              onClick={onOpenReviewModal}
+              className="mt-4 px-4 py-2 text-xs font-semibold rounded-lg bg-slate-800 text-emerald-400 hover:bg-slate-700 transition"
+            >
+              Adicionar primeira avaliação
+            </button>
+          )}
         </div>
       )}
-
-      {/* Modal para criar avaliação */}
-      <ReviewModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        movieId={movieId}
-        movieTitle={movieTitle}
-      />
     </section>
   );
 };

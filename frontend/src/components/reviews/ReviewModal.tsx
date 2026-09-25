@@ -4,6 +4,7 @@ import { Star, Send, AlertCircle } from 'lucide-react';
 import { Modal } from '../common/Modal';
 import { addReviewToMovie } from '../../api/reviews';
 import { ReviewCreate } from '../../types';
+import { getRatingColorClass } from '../../utils/rating';
 
 interface ReviewModalProps {
   isOpen: boolean;
@@ -29,7 +30,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
   const mutation = useMutation({
     mutationFn: (payload: ReviewCreate) => addReviewToMovie(movieId, payload),
     onSuccess: () => {
-      // Invalida todas as consultas de filme e avaliações para recalcular média geral e atualizar lista
+      // Invalida consultas para atualizar média geral, resumo de avaliações e listagem
       queryClient.invalidateQueries({ queryKey: ['movie'] });
       queryClient.invalidateQueries({ queryKey: ['reviews'] });
       queryClient.invalidateQueries({ queryKey: ['movies'] });
@@ -41,7 +42,6 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
       setErrorMsg(err.message || 'Falha ao registrar avaliação.');
     },
   });
-
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,12 +64,6 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
       nota: Number(nota),
       comentario: comentario.trim(),
     });
-  };
-
-  const getScoreColor = (val: number) => {
-    if (val >= 7.0) return 'text-emerald-400 bg-emerald-950/60 border-emerald-700/50';
-    if (val >= 5.0) return 'text-amber-400 bg-amber-950/60 border-amber-700/50';
-    return 'text-rose-400 bg-rose-950/60 border-rose-700/50';
   };
 
   return (
@@ -99,73 +93,119 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
           />
         </div>
 
-        {/* Nota 0 a 10 Slider + Input */}
-        <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
+        {/* Avaliação em Estrelas e Escala 0 a 10 */}
+        <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-4">
           <div className="flex items-center justify-between">
-            <label htmlFor="review-score" className="text-xs font-semibold text-slate-300 uppercase tracking-wide">
+            <label htmlFor="review-nota-range" className="text-xs font-semibold text-slate-300 uppercase tracking-wide">
               Nota da Avaliação (0.0 a 10.0) *
             </label>
             <div
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-full border font-bold text-sm ${getScoreColor(
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-full border font-bold text-sm ${getRatingColorClass(
                 nota
               )}`}
             >
-              <Star size={16} className="fill-current" />
+              <Star size={16} className="fill-current text-amber-400" />
               <span>{nota.toFixed(1)} / 10</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <input
-              id="review-score-range"
-              type="range"
-              min="0"
-              max="10"
-              step="0.5"
-              value={nota}
-              onChange={(e) => {
-                const val = parseFloat(e.target.value);
-                setNota(val);
-                setNotaInput(String(val));
-              }}
-              className="flex-1 accent-emerald-500 cursor-pointer h-2 bg-slate-800 rounded-lg appearance-none"
-            />
-            <input
-              id="review-score"
-              type="number"
-              min="0"
-              max="10"
-              step="0.1"
-              value={notaInput}
-              onChange={(e) => {
-                const str = e.target.value;
-                setNotaInput(str);
-                const val = parseFloat(str);
-                if (!isNaN(val)) {
-                  setNota(Math.min(10, Math.max(0, val)));
-                }
-              }}
-              onBlur={() => {
-                const val = parseFloat(notaInput);
-                if (isNaN(val)) {
-                  setNota(8.0);
-                  setNotaInput('8.0');
-                } else {
-                  const clamped = Math.min(10, Math.max(0, val));
-                  setNota(clamped);
-                  setNotaInput(String(clamped));
-                }
-              }}
-              className="w-20 px-2 py-1 bg-slate-900 border border-slate-700 rounded-lg text-center text-sm font-semibold text-emerald-400 focus:outline-none focus:border-emerald-500"
-            />
+          {/* Seletor Visual de 1 a 5 Estrelas */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-slate-400">Classificação em Estrelas:</span>
+              <span className="text-xs font-semibold text-amber-300">
+                {(nota / 2).toFixed(1)} de 5 estrelas
+              </span>
+            </div>
+            <div className="flex items-center gap-2" role="group" aria-label="Seletor de 1 a 5 estrelas">
+              {[1, 2, 3, 4, 5].map((starIdx) => {
+                const starScore = starIdx * 2.0;
+                const isFilled = nota >= starScore;
+                const isPartiallyFilled = !isFilled && nota >= starScore - 1.0;
+
+                return (
+                  <button
+                    key={starIdx}
+                    type="button"
+                    onClick={() => {
+                      setNota(starScore);
+                      setNotaInput(starScore.toFixed(1));
+                    }}
+                    title={`Definir nota ${(starIdx * 2).toFixed(1)} (${starIdx} estrelas)`}
+                    aria-label={`${starIdx} estrelas`}
+                    className="p-1 rounded-lg hover:bg-slate-800 transition transform hover:scale-110 focus:outline-none"
+                  >
+                    <Star
+                      size={26}
+                      className={
+                        isFilled
+                          ? 'fill-amber-400 text-amber-400 drop-shadow-sm'
+                          : isPartiallyFilled
+                          ? 'fill-amber-400/50 text-amber-400'
+                          : 'text-slate-600 hover:text-slate-400'
+                      }
+                    />
+                  </button>
+                );
+              })}
+            </div>
           </div>
+
+          {/* Slider e Input Decimal para Ajuste Fino */}
+          <div className="space-y-1.5 pt-2 border-t border-slate-800/80">
+            <span className="text-[11px] text-slate-400">Ajuste fino decimal (escala de 0.0 a 10.0):</span>
+            <div className="flex items-center gap-4">
+              <input
+                id="review-nota-range"
+                type="range"
+                min="0"
+                max="10"
+                step="0.5"
+                value={nota}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  setNota(val);
+                  setNotaInput(String(val));
+                }}
+                className="flex-1 accent-emerald-500 cursor-pointer h-2 bg-slate-800 rounded-lg appearance-none"
+              />
+              <input
+                id="review-nota"
+                type="number"
+                min="0"
+                max="10"
+                step="0.1"
+                value={notaInput}
+                onChange={(e) => {
+                  const str = e.target.value;
+                  setNotaInput(str);
+                  const val = parseFloat(str);
+                  if (!isNaN(val)) {
+                    setNota(Math.min(10, Math.max(0, val)));
+                  }
+                }}
+                onBlur={() => {
+                  const val = parseFloat(notaInput);
+                  if (isNaN(val)) {
+                    setNota(8.0);
+                    setNotaInput('8.0');
+                  } else {
+                    const clamped = Math.min(10, Math.max(0, val));
+                    setNota(clamped);
+                    setNotaInput(String(clamped));
+                  }
+                }}
+                className="w-20 px-2 py-1 bg-slate-900 border border-slate-700 rounded-lg text-center text-sm font-semibold text-emerald-400 focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+          </div>
+
           <div className="flex justify-between text-[11px] text-slate-500 px-0.5">
             <span>0.0 (Péssimo)</span>
             <span>5.0 (Médio)</span>
             <span>10.0 (Excelente)</span>
           </div>
         </div>
-
 
         {/* Comentário / Resenha */}
         <div>

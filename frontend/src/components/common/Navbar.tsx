@@ -42,7 +42,7 @@ export const Navbar: React.FC = () => {
             <span className="sm:hidden">Novo</span>
           </Link>
 
-          {/* Admin Persona Badge */}
+          {/* Administrador Persona Badge */}
           <div
             className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs text-slate-300 font-medium select-none"
             title="Sessão ativa com privilégios de Administrador"

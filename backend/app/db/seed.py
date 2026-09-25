@@ -86,6 +86,23 @@ def read_csv(path: Path) -> list[dict[str, str]]:
         return list(reader)
 
 
+async def execute_in_batches(
+    session: AsyncSession,
+    statement: Any,
+    data: list[dict[str, Any]],
+    batch_size: int = 5000,
+    label: str = "",
+) -> None:
+    total = len(data)
+    if total == 0:
+        return
+    for i in range(0, total, batch_size):
+        chunk = data[i : i + batch_size]
+        await session.execute(statement, chunk)
+        if label and (i + len(chunk) == total or (i // batch_size) % 5 == 0):
+            logger.info("Populando %s: %d/%d registros...", label, i + len(chunk), total)
+
+
 async def run_seed(
     session: AsyncSession,
     sample_size: int | None = 100,
@@ -162,7 +179,9 @@ async def run_seed(
         if r.get("sk_genre_id") and r.get("nome_genero")
     ]
     if genres_data:
-        await session.execute(sqlite_insert(DimGenre).on_conflict_do_nothing(), genres_data)
+        await execute_in_batches(
+            session, sqlite_insert(DimGenre).on_conflict_do_nothing(), genres_data, label="Gêneros"
+        )
 
     # DimCompany
     companies_data = [
@@ -171,7 +190,9 @@ async def run_seed(
         if r.get("sk_company_id") and r.get("nome_produtora")
     ]
     if companies_data:
-        await session.execute(sqlite_insert(DimCompany).on_conflict_do_nothing(), companies_data)
+        await execute_in_batches(
+            session, sqlite_insert(DimCompany).on_conflict_do_nothing(), companies_data, label="Produtoras"
+        )
 
     # DimPerson (deduplicated by sk_person_id)
     seen_people = set()
@@ -188,7 +209,9 @@ async def run_seed(
                 }
             )
     if people_data:
-        await session.execute(sqlite_insert(DimPerson).on_conflict_do_nothing(), people_data)
+        await execute_in_batches(
+            session, sqlite_insert(DimPerson).on_conflict_do_nothing(), people_data, label="Pessoas/Elenco"
+        )
 
     # DimMovie
     movies_data = [
@@ -208,34 +231,42 @@ async def run_seed(
         if r.get("sk_movie_id")
     ]
     if movies_data:
-        await session.execute(sqlite_insert(DimMovie).on_conflict_do_nothing(), movies_data)
+        await execute_in_batches(
+            session, sqlite_insert(DimMovie).on_conflict_do_nothing(), movies_data, label="Filmes"
+        )
 
     # Bridges
     if movie_genres_raw:
-        await session.execute(
+        await execute_in_batches(
+            session,
             sqlite_insert(bridge_movie_genre).on_conflict_do_nothing(),
             [
                 {"sk_movie_id": r["sk_movie_id"], "sk_genre_id": r["sk_genre_id"]}
                 for r in movie_genres_raw
             ],
+            label="Relações Filme-Gênero",
         )
 
     if movie_companies_raw:
-        await session.execute(
+        await execute_in_batches(
+            session,
             sqlite_insert(bridge_movie_company).on_conflict_do_nothing(),
             [
                 {"sk_movie_id": r["sk_movie_id"], "sk_company_id": r["sk_company_id"]}
                 for r in movie_companies_raw
             ],
+            label="Relações Filme-Produtora",
         )
 
     if movie_people_raw:
-        await session.execute(
+        await execute_in_batches(
+            session,
             sqlite_insert(bridge_movie_person).on_conflict_do_nothing(),
             [
                 {"sk_movie_id": r["sk_movie_id"], "sk_person_id": r["sk_person_id"]}
                 for r in movie_people_raw
             ],
+            label="Relações Filme-Pessoa",
         )
 
     # FactMoviePerformance
@@ -258,8 +289,11 @@ async def run_seed(
         if r.get("sk_movie_id")
     ]
     if perf_data:
-        await session.execute(
-            sqlite_insert(FactMoviePerformance).on_conflict_do_nothing(), perf_data
+        await execute_in_batches(
+            session,
+            sqlite_insert(FactMoviePerformance).on_conflict_do_nothing(),
+            perf_data,
+            label="Métricas de Desempenho",
         )
 
     # DimReview
@@ -274,7 +308,12 @@ async def run_seed(
         if r.get("sk_movie_id")
     ]
     if summaries_data:
-        await session.execute(sqlite_insert(DimReview).on_conflict_do_nothing(), summaries_data)
+        await execute_in_batches(
+            session,
+            sqlite_insert(DimReview).on_conflict_do_nothing(),
+            summaries_data,
+            label="Resumo de Avaliações",
+        )
 
     # MovieReview
     reviews_data = [
@@ -289,7 +328,12 @@ async def run_seed(
         if r.get("sk_movie_id") and r.get("sk_movie_review_id")
     ]
     if reviews_data:
-        await session.execute(sqlite_insert(MovieReview).on_conflict_do_nothing(), reviews_data)
+        await execute_in_batches(
+            session,
+            sqlite_insert(MovieReview).on_conflict_do_nothing(),
+            reviews_data,
+            label="Avaliações de Usuários",
+        )
 
     await session.commit()
     logger.info("Seed concluído com sucesso! %d filmes populados.", len(movies_data))

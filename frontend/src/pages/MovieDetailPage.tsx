@@ -8,6 +8,7 @@ import { MoviePerformanceInfo } from '../components/movies/MoviePerformanceInfo'
 import { ReviewList } from '../components/reviews/ReviewList';
 import { ReviewModal } from '../components/reviews/ReviewModal';
 import { DeleteMovieModal } from '../components/movies/DeleteMovieModal';
+import { getMovieId } from '../utils/movie';
 
 export const MovieDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -58,7 +59,7 @@ export const MovieDetailPage: React.FC = () => {
     );
   }
 
-  const movieId = movie.id_filme || movie.sk_movie_id;
+  const movieId = getMovieId(movie);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -82,7 +83,11 @@ export const MovieDetailPage: React.FC = () => {
       {movie.performance && <MoviePerformanceInfo performance={movie.performance} />}
 
       {/* Histórico de Avaliações */}
-      <ReviewList movieId={movieId} movieTitle={movie.titulo} />
+      <ReviewList
+        movieId={movieId}
+        movieTitle={movie.titulo}
+        onOpenReviewModal={() => setIsReviewModalOpen(true)}
+      />
 
       {/* Modais */}
       <ReviewModal

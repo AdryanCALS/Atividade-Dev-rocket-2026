@@ -46,6 +46,25 @@ describe('ReviewModal', () => {
     expect(screen.getByText(/Nota da Avaliação \(0\.0 a 10\.0\)/)).toBeInTheDocument();
     expect(screen.getByDisplayValue('Administrador')).toBeInTheDocument();
     expect(screen.getByText('8.0 / 10')).toBeInTheDocument();
+    expect(screen.getByText(/4\.0 de 5 estrelas/)).toBeInTheDocument();
+  });
+
+  it('deve atualizar a nota ao clicar em uma estrela do seletor', () => {
+    renderWithClient(
+      <ReviewModal
+        isOpen={true}
+        onClose={vi.fn()}
+        movieId="1"
+        movieTitle="O Poderoso Chefão"
+      />
+    );
+
+    // Clica no botão de 5 estrelas
+    const fiveStarButton = screen.getByRole('button', { name: '5 estrelas' });
+    fireEvent.click(fiveStarButton);
+
+    expect(screen.getByText('10.0 / 10')).toBeInTheDocument();
+    expect(screen.getByText(/5\.0 de 5 estrelas/)).toBeInTheDocument();
   });
 
   it('deve submeter avaliação com sucesso quando campos válidos forem preenchidos', async () => {
@@ -54,7 +73,7 @@ describe('ReviewModal', () => {
       sk_movie_id: '1',
       nome: 'Administrador',
       nota: 9.5,
-      comentario: 'Uma obra-prima do cinema mundial.',
+      comentario: 'Excelente filme do cinema mundial.',
       created_at: '2026-09-25T12:00:00Z',
     });
 
@@ -74,7 +93,7 @@ describe('ReviewModal', () => {
 
     // Preenche o comentário
     const textarea = screen.getByPlaceholderText(/Escreva seus comentários/);
-    fireEvent.change(textarea, { target: { value: 'Uma obra-prima do cinema mundial.' } });
+    fireEvent.change(textarea, { target: { value: 'Excelente filme do cinema mundial.' } });
 
     // Submete
     const submitButton = screen.getByRole('button', { name: /Publicar Avaliação/ });
@@ -84,7 +103,7 @@ describe('ReviewModal', () => {
       expect(reviewApi.addReviewToMovie).toHaveBeenCalledWith('1', {
         nome: 'Administrador',
         nota: 9.5,
-        comentario: 'Uma obra-prima do cinema mundial.',
+        comentario: 'Excelente filme do cinema mundial.',
       });
       expect(handleClose).toHaveBeenCalled();
     });

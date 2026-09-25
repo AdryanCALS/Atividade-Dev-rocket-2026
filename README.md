@@ -57,6 +57,25 @@ Para rodar os testes do backend:
 pytest
 ```
 
+#### População do Banco de Dados (Seed dos CSVs)
+
+Para carregar dados a partir dos arquivos CSV contidos na pasta `data/`:
+
+- **Amostra padrão (100 filmes):**
+  ```bash
+  python -m app.db.seed
+  ```
+- **Amostra customizada (ex: 500 filmes):**
+  ```bash
+  python -m app.db.seed --sample 500
+  ```
+- **Carga completa de toda a base CSV (~95.000 filmes):**
+  ```bash
+  python -m app.db.seed --full
+  ```
+  *(Dica: use a flag `--reset` para limpar e recriar as tabelas antes de popular: `python -m app.db.seed --full --reset`)*
+
+
 ---
 
 ### 2. Frontend (Vite + React + TypeScript + Tailwind)
