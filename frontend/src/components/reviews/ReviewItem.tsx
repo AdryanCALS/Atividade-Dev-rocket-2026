@@ -33,7 +33,7 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({ review }) => {
         <RatingBadge nota={review.nota} size="sm" showCount={false} />
       </div>
 
-      <p className="text-sm text-[#333333] leading-relaxed whitespace-pre-line pl-0.5">
+      <p className="text-sm text-visagio-black leading-relaxed whitespace-pre-line pl-0.5">
         {review.comentario}
       </p>
     </article>

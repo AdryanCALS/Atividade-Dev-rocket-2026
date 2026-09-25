@@ -169,7 +169,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                   setNota(val);
                   setNotaInput(String(val));
                 }}
-                className="flex-1 accent-visagio-yellow cursor-pointer h-2 bg-slate-200 rounded-lg appearance-none"
+                className="flex-1 accent-visagio-yellow cursor-pointer h-2 bg-visagio-border rounded-lg appearance-none"
               />
               <input
                 id="review-nota"

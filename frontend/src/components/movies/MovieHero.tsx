@@ -79,14 +79,14 @@ export const MovieHero: React.FC<MovieHeroProps> = ({
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:text-sm text-visagio-muted mt-2">
               {movie.diretor && (
                 <span className="flex items-center gap-1.5 font-semibold text-visagio-black">
-                  <User size={15} className="text-amber-500" />
+                  <User size={15} className="text-visagio-yellow" />
                   <span>Direção: {movie.diretor}</span>
                 </span>
               )}
 
               {movie.data_lancamento && (
                 <span className="flex items-center gap-1.5 font-medium text-visagio-black">
-                  <Calendar size={14} className="text-amber-500" />
+                  <Calendar size={14} className="text-visagio-yellow" />
                   <span>Lançamento: {formatDate(String(movie.data_lancamento))}</span>
                 </span>
               )}
@@ -135,7 +135,7 @@ export const MovieHero: React.FC<MovieHeroProps> = ({
               <h3 className="text-xs font-bold uppercase tracking-wider text-visagio-muted mb-1">
                 Sinopse
               </h3>
-              <p className="text-sm sm:text-base text-[#222222] leading-relaxed max-w-3xl">
+              <p className="text-sm sm:text-base text-visagio-black leading-relaxed max-w-3xl">
                 {movie.sinopse}
               </p>
             </div>

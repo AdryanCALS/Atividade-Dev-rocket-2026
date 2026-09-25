@@ -47,7 +47,7 @@ export const RatingBadge: React.FC<RatingBadgeProps> = ({
     >
       <Star
         size={starSizes}
-        className={hasRating ? 'fill-visagio-yellow text-amber-500' : 'text-slate-400'}
+        className={hasRating ? 'fill-visagio-yellow text-visagio-yellow' : 'text-visagio-muted'}
       />
       <span>{formatRating(currentNota)}</span>
       {showCount && typeof count === 'number' && (

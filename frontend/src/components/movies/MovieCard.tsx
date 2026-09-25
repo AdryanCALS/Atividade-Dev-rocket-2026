@@ -52,7 +52,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
       <div className="p-3.5 flex flex-col flex-1 justify-between gap-2">
         <div>
           <h3
-            className="text-sm font-bold text-visagio-black group-hover:text-amber-600 transition line-clamp-1"
+            className="text-sm font-bold text-visagio-black group-hover:text-visagio-yellowHover transition line-clamp-1"
             title={movie.titulo}
           >
             {movie.titulo}
