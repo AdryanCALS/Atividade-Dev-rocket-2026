@@ -105,17 +105,17 @@ export const MovieForm: React.FC<MovieFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {(validationError || error) && (
-        <div className="p-4 bg-rose-950/50 border border-rose-800/80 rounded-2xl flex items-center gap-3 text-rose-300 text-sm">
-          <AlertCircle size={18} className="shrink-0 text-rose-400" />
+        <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-3 text-rose-700 text-sm">
+          <AlertCircle size={18} className="shrink-0 text-rose-600" />
           <span>{validationError || error?.message || 'Erro ao processar filme.'}</span>
         </div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Coluna 1 & 2: Campos de dados principais */}
-        <div className="lg:col-span-2 space-y-5 bg-slate-900/60 p-6 rounded-2xl border border-slate-800">
+        <div className="lg:col-span-2 space-y-5 bg-white p-6 rounded-2xl border border-visagio-border shadow-sm">
           <div>
-            <label htmlFor="movie-title" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label htmlFor="movie-title" className="block text-xs font-semibold text-visagio-black uppercase tracking-wider mb-1.5">
               Título do Filme *
             </label>
             <input
@@ -126,13 +126,13 @@ export const MovieForm: React.FC<MovieFormProps> = ({
               value={formData.titulo}
               onChange={(e) => updateField('titulo', e.target.value)}
               placeholder="Ex: O Poderoso Chefão"
-              className="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
+              className="w-full px-4 py-2.5 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black placeholder-visagio-muted focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow text-sm"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="movie-director" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="movie-director" className="block text-xs font-semibold text-visagio-black uppercase tracking-wider mb-1.5">
                 Diretor / Direção
               </label>
               <input
@@ -141,19 +141,19 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                 value={formData.diretor}
                 onChange={(e) => updateField('diretor', e.target.value)}
                 placeholder="Ex: Francis Ford Coppola"
-                className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
+                className="w-full px-3.5 py-2 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black placeholder-visagio-muted focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow text-sm"
               />
             </div>
 
             <div>
-              <label htmlFor="movie-status" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="movie-status" className="block text-xs font-semibold text-visagio-black uppercase tracking-wider mb-1.5">
                 Status
               </label>
               <select
                 id="movie-status"
                 value={formData.status_filme}
                 onChange={(e) => updateField('status_filme', e.target.value)}
-                className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:outline-none focus:border-emerald-500 text-sm"
+                className="w-full px-3.5 py-2 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow text-sm"
               >
                 <option value="Lançado">Lançado</option>
                 <option value="Em Produção">Em Produção</option>
@@ -165,7 +165,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label htmlFor="movie-year" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="movie-year" className="block text-xs font-semibold text-visagio-black uppercase tracking-wider mb-1.5">
                 Ano de Lançamento
               </label>
               <input
@@ -176,12 +176,12 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                 value={formData.ano_lancamento}
                 onChange={(e) => updateField('ano_lancamento', e.target.value)}
                 placeholder="Ex: 1972"
-                className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
+                className="w-full px-3.5 py-2 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black placeholder-visagio-muted focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow text-sm"
               />
             </div>
 
             <div>
-              <label htmlFor="movie-date" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="movie-date" className="block text-xs font-semibold text-visagio-black uppercase tracking-wider mb-1.5">
                 Data Completa
               </label>
               <input
@@ -189,12 +189,12 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                 type="date"
                 value={formData.data_lancamento}
                 onChange={(e) => updateField('data_lancamento', e.target.value)}
-                className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:outline-none focus:border-emerald-500 text-sm"
+                className="w-full px-3.5 py-2 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow text-sm"
               />
             </div>
 
             <div>
-              <label htmlFor="movie-runtime" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="movie-runtime" className="block text-xs font-semibold text-visagio-black uppercase tracking-wider mb-1.5">
                 Duração (minutos)
               </label>
               <input
@@ -205,13 +205,13 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                 value={formData.duracao_minutos}
                 onChange={(e) => updateField('duracao_minutos', e.target.value)}
                 placeholder="Ex: 175"
-                className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
+                className="w-full px-3.5 py-2 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black placeholder-visagio-muted focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow text-sm"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="movie-synopsis" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label htmlFor="movie-synopsis" className="block text-xs font-semibold text-visagio-black uppercase tracking-wider mb-1.5">
               Sinopse do Filme
             </label>
             <textarea
@@ -220,13 +220,13 @@ export const MovieForm: React.FC<MovieFormProps> = ({
               value={formData.sinopse}
               onChange={(e) => updateField('sinopse', e.target.value)}
               placeholder="Descreva a história e premissa principal do filme..."
-              className="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm resize-y"
+              className="w-full px-4 py-2.5 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black placeholder-visagio-muted focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow text-sm resize-y"
             />
           </div>
 
           {/* Seleção de Gêneros */}
-          <div className="space-y-3 pt-2 border-t border-slate-800">
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+          <div className="space-y-3 pt-2 border-t border-visagio-border">
+            <label className="block text-xs font-semibold text-visagio-black uppercase tracking-wider">
               Gêneros do Filme
             </label>
 
@@ -235,21 +235,21 @@ export const MovieForm: React.FC<MovieFormProps> = ({
               {formData.generos.map((gen) => (
                 <span
                   key={gen}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-visagio-yellow text-visagio-black border border-visagio-yellowHover"
                 >
                   <Check size={12} />
                   <span>{gen}</span>
                   <button
                     type="button"
                     onClick={() => toggleGenre(gen)}
-                    className="p-0.5 rounded-full hover:bg-emerald-500/30 text-emerald-400 hover:text-white"
+                    className="p-0.5 rounded-full hover:bg-visagio-yellowHover text-visagio-black"
                   >
                     <X size={12} />
                   </button>
                 </span>
               ))}
               {formData.generos.length === 0 && (
-                <span className="text-xs text-slate-500 italic">
+                <span className="text-xs text-visagio-muted italic">
                   Nenhum gênero selecionado ainda.
                 </span>
               )}
@@ -258,8 +258,8 @@ export const MovieForm: React.FC<MovieFormProps> = ({
             {/* Chips Sugeridos da API */}
             {availableGenres && availableGenres.length > 0 && (
               <div className="space-y-1.5 pt-1">
-                <span className="text-[11px] text-slate-400 font-medium">Gêneros existentes (clique para alternar):</span>
-                <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-1 rounded-lg bg-slate-950/60 border border-slate-800">
+                <span className="text-[11px] text-visagio-muted font-medium">Gêneros existentes (clique para alternar):</span>
+                <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-2 rounded-lg bg-visagio-bg border border-visagio-border">
                   {availableGenres.map((g) => {
                     const isSelected = formData.generos.includes(g.nome_genero);
                     return (
@@ -269,8 +269,8 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                         onClick={() => toggleGenre(g.nome_genero)}
                         className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${
                           isSelected
-                            ? 'bg-emerald-600 text-slate-950 font-bold'
-                            : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
+                            ? 'bg-visagio-yellow text-visagio-black font-bold border border-visagio-yellowHover'
+                            : 'bg-white border border-visagio-border text-visagio-black hover:bg-visagio-bg'
                         }`}
                       >
                         {g.nome_genero}
@@ -294,12 +294,12 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                   }
                 }}
                 placeholder="Novo gênero (ex: Noir)..."
-                className="flex-1 px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                className="flex-1 px-3 py-1.5 bg-white border border-visagio-inputBorder rounded-lg text-xs text-visagio-black placeholder-visagio-muted focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow"
               />
               <button
                 type="button"
                 onClick={handleAddNewGenre}
-                className="flex items-center gap-1 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition"
+                className="flex items-center gap-1 px-3 py-1.5 bg-visagio-black hover:bg-black text-white rounded-lg text-xs font-medium transition"
               >
                 <Plus size={14} /> Adicionar
               </button>
@@ -308,13 +308,13 @@ export const MovieForm: React.FC<MovieFormProps> = ({
         </div>
 
         {/* Coluna 3: Pôster & Backdrop */}
-        <div className="space-y-5 bg-slate-900/60 p-6 rounded-2xl border border-slate-800">
-          <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+        <div className="space-y-5 bg-white p-6 rounded-2xl border border-visagio-border shadow-sm">
+          <h3 className="text-xs font-semibold text-visagio-black uppercase tracking-wider">
             Mídias Visuais
           </h3>
 
           <div>
-            <label htmlFor="movie-poster-url" className="block text-xs font-medium text-slate-400 mb-1">
+            <label htmlFor="movie-poster-url" className="block text-xs font-medium text-visagio-black mb-1">
               URL do Pôster
             </label>
             <input
@@ -323,12 +323,12 @@ export const MovieForm: React.FC<MovieFormProps> = ({
               value={formData.url_poster}
               onChange={(e) => updateField('url_poster', e.target.value)}
               placeholder="https://.../poster.jpg"
-              className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-xs"
+              className="w-full px-3.5 py-2 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black placeholder-visagio-muted focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow text-xs"
             />
           </div>
 
           <div>
-            <label htmlFor="movie-backdrop-url" className="block text-xs font-medium text-slate-400 mb-1">
+            <label htmlFor="movie-backdrop-url" className="block text-xs font-medium text-visagio-black mb-1">
               URL do Backdrop (Capa)
             </label>
             <input
@@ -337,14 +337,14 @@ export const MovieForm: React.FC<MovieFormProps> = ({
               value={formData.url_backdrop}
               onChange={(e) => updateField('url_backdrop', e.target.value)}
               placeholder="https://.../backdrop.jpg"
-              className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-xs"
+              className="w-full px-3.5 py-2 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black placeholder-visagio-muted focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow text-xs"
             />
           </div>
 
           {/* Preview do Pôster */}
           <div className="pt-2">
-            <span className="block text-[11px] text-slate-500 mb-2">Pré-visualização do Pôster:</span>
-            <div className="w-36 aspect-[2/3] mx-auto rounded-xl overflow-hidden bg-slate-950 border border-slate-800 flex items-center justify-center">
+            <span className="block text-[11px] text-visagio-muted mb-2">Pré-visualização do Pôster:</span>
+            <div className="w-36 aspect-[2/3] mx-auto rounded-xl overflow-hidden bg-visagio-bg border border-visagio-border flex items-center justify-center">
               {formData.url_poster ? (
                 <img
                   src={formData.url_poster}
@@ -355,7 +355,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                   }}
                 />
               ) : (
-                <div className="text-center p-3 text-slate-600">
+                <div className="text-center p-3 text-visagio-muted">
                   <Film size={28} className="mx-auto mb-1 opacity-50" />
                   <span className="text-[10px]">Sem imagem</span>
                 </div>
@@ -366,12 +366,12 @@ export const MovieForm: React.FC<MovieFormProps> = ({
       </div>
 
       {/* Ações do Formulário */}
-      <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-800">
+      <div className="flex items-center justify-end gap-4 pt-4 border-t border-visagio-border">
         <button
           type="button"
           onClick={onCancel}
           disabled={isLoading}
-          className="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition"
+          className="px-5 py-2.5 rounded-xl text-sm font-medium text-visagio-muted hover:text-visagio-black hover:bg-visagio-bg transition"
         >
           Cancelar
         </button>
@@ -379,11 +379,11 @@ export const MovieForm: React.FC<MovieFormProps> = ({
         <button
           type="submit"
           disabled={isLoading}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold bg-emerald-500 text-slate-950 hover:bg-emerald-400 disabled:opacity-50 transition shadow-lg shadow-emerald-500/20"
+          className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold bg-visagio-yellow text-visagio-black hover:bg-visagio-yellowHover disabled:opacity-50 transition shadow-sm"
         >
           {isLoading ? (
             <>
-              <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-visagio-black border-t-transparent rounded-full animate-spin" />
               <span>Salvando filme...</span>
             </>
           ) : (

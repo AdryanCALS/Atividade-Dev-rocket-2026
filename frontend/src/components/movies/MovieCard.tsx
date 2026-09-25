@@ -16,10 +16,10 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
   return (
     <Link
       to={`/filmes/${movieId}`}
-      className="group flex flex-col bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-950/20 transition duration-200"
+      className="group flex flex-col bg-white border border-visagio-border rounded-xl overflow-hidden hover:border-visagio-yellow hover:shadow-xl hover:shadow-visagio-yellow/10 transition duration-200"
     >
       {/* Poster / Fallback */}
-      <div className="relative aspect-[2/3] w-full bg-slate-950 overflow-hidden flex items-center justify-center">
+      <div className="relative aspect-[2/3] w-full bg-visagio-bg overflow-hidden flex items-center justify-center">
         {movie.url_poster && !imageError ? (
           <img
             src={movie.url_poster}
@@ -29,16 +29,16 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full p-4 flex flex-col items-center justify-center text-center bg-gradient-to-b from-slate-850 to-slate-950 border-b border-slate-800">
-            <Film size={36} className="text-slate-600 mb-2 group-hover:text-emerald-400 transition" />
-            <span className="text-xs font-semibold text-slate-400 line-clamp-3">
+          <div className="w-full h-full p-4 flex flex-col items-center justify-center text-center bg-visagio-bg border-b border-visagio-border">
+            <Film size={36} className="text-visagio-muted mb-2 group-hover:text-visagio-black transition" />
+            <span className="text-xs font-semibold text-visagio-muted line-clamp-3">
               {movie.titulo}
             </span>
           </div>
         )}
 
         {/* Rating Floating Badge */}
-        <div className="absolute top-2 right-2 drop-shadow-md">
+        <div className="absolute top-2 right-2 drop-shadow-sm">
           <RatingBadge
             nota={movie.reviews_summary?.nota_media_usuarios}
             count={movie.reviews_summary?.qtd_avaliacoes_usuarios}
@@ -52,13 +52,13 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
       <div className="p-3.5 flex flex-col flex-1 justify-between gap-2">
         <div>
           <h3
-            className="text-sm font-semibold text-slate-100 group-hover:text-emerald-400 transition line-clamp-1"
+            className="text-sm font-bold text-visagio-black group-hover:text-amber-600 transition line-clamp-1"
             title={movie.titulo}
           >
             {movie.titulo}
           </h3>
 
-          <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
+          <div className="flex items-center gap-2 mt-1 text-xs text-visagio-muted">
             {movie.ano_lancamento && <span>{movie.ano_lancamento}</span>}
             {movie.ano_lancamento && movie.diretor && <span>•</span>}
             {movie.diretor && (
@@ -75,13 +75,13 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
             {movie.generos.slice(0, 2).map((genre) => (
               <span
                 key={genre}
-                className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-800 text-slate-300 border border-slate-700/60"
+                className="px-2 py-0.5 rounded text-[10px] font-semibold bg-visagio-bg text-visagio-black border border-visagio-border"
               >
                 {genre}
               </span>
             ))}
             {movie.generos.length > 2 && (
-              <span className="px-1 py-0.5 text-[10px] text-slate-500">
+              <span className="px-1.5 py-0.5 text-[10px] text-visagio-muted">
                 +{movie.generos.length - 2}
               </span>
             )}

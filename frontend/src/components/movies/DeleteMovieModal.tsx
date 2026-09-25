@@ -33,20 +33,20 @@ export const DeleteMovieModal: React.FC<DeleteMovieModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Confirmar Exclusão de Filme" maxWidth="md">
       <div className="space-y-4">
-        <div className="p-4 bg-rose-950/40 border border-rose-800/60 rounded-xl flex items-start gap-3">
-          <AlertTriangle className="text-rose-400 shrink-0 mt-0.5" size={20} />
-          <div className="text-xs text-rose-200/90 leading-relaxed">
-            <p className="font-semibold text-rose-200">Atenção! Esta ação é irreversível.</p>
+        <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl flex items-start gap-3">
+          <AlertTriangle className="text-rose-600 shrink-0 mt-0.5" size={20} />
+          <div className="text-xs text-rose-800 leading-relaxed">
+            <p className="font-semibold text-rose-900">Atenção! Esta ação é irreversível.</p>
             <p className="mt-1">
               Você está prestes a excluir permanentemente o filme{' '}
-              <strong className="text-white underline">{movieTitle}</strong> e todas as suas
+              <strong className="text-visagio-black underline">{movieTitle}</strong> e todas as suas
               avaliações associadas do banco de dados.
             </p>
           </div>
         </div>
 
         {mutation.isError && (
-          <p className="text-xs text-rose-400">
+          <p className="text-xs text-rose-600 font-medium">
             {mutation.error instanceof Error
               ? mutation.error.message
               : 'Não foi possível excluir o filme.'}
@@ -58,7 +58,7 @@ export const DeleteMovieModal: React.FC<DeleteMovieModalProps> = ({
             type="button"
             onClick={onClose}
             disabled={mutation.isPending}
-            className="px-4 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="px-4 py-2 rounded-xl text-sm font-medium text-visagio-muted hover:text-visagio-black hover:bg-visagio-bg transition"
           >
             Cancelar
           </button>
@@ -67,7 +67,7 @@ export const DeleteMovieModal: React.FC<DeleteMovieModalProps> = ({
             type="button"
             onClick={() => mutation.mutate()}
             disabled={mutation.isPending}
-            className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold bg-rose-600 hover:bg-rose-500 text-white disabled:opacity-50 transition shadow-md shadow-rose-900/30"
+            className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold bg-rose-600 hover:bg-rose-700 text-white disabled:opacity-50 transition shadow-sm"
           >
             {mutation.isPending ? (
               <>

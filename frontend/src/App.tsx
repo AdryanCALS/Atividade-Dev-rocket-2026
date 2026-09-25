@@ -10,7 +10,7 @@ import { MovieEditPage } from './pages/MovieEditPage';
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <div className="flex flex-col min-h-screen bg-brand-dark text-slate-100 selection:bg-emerald-500 selection:text-slate-950">
+      <div className="flex flex-col min-h-screen bg-visagio-bg text-visagio-black selection:bg-visagio-yellow selection:text-visagio-black">
         <Navbar />
         <main className="flex-1">
           <Routes>

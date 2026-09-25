@@ -40,15 +40,18 @@ export const RatingBadge: React.FC<RatingBadgeProps> = ({
 
   return (
     <div
-      className={`inline-flex items-center font-medium rounded-full border ${getRatingColorClass(
+      className={`inline-flex items-center font-semibold rounded-full border shadow-sm ${getRatingColorClass(
         currentNota
       )} ${sizeClasses}`}
       title={tooltip}
     >
-      <Star size={starSizes} className={hasRating ? 'fill-current' : 'text-slate-500'} />
+      <Star
+        size={starSizes}
+        className={hasRating ? 'fill-visagio-yellow text-amber-500' : 'text-slate-400'}
+      />
       <span>{formatRating(currentNota)}</span>
       {showCount && typeof count === 'number' && (
-        <span className="text-slate-400 text-xs font-normal">
+        <span className="text-visagio-muted text-xs font-normal">
           ({count} {count === 1 ? 'avaliação' : 'avaliações'})
         </span>
       )}

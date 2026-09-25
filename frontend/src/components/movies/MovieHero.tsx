@@ -28,24 +28,24 @@ export const MovieHero: React.FC<MovieHeroProps> = ({
   };
 
   return (
-    <div className="relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-800 shadow-2xl">
-      {/* Backdrop Image com overlay gradiente */}
+    <div className="relative rounded-3xl overflow-hidden bg-white border border-visagio-border shadow-xl">
+      {/* Backdrop Image com overlay gradiente para o tema claro */}
       {movie.url_backdrop && (
-        <div className="absolute inset-0 z-0 h-96 w-full overflow-hidden opacity-25">
+        <div className="absolute inset-0 z-0 h-96 w-full overflow-hidden opacity-20">
           <img
             src={movie.url_backdrop}
             alt=""
             className="w-full h-full object-cover object-center filter blur-sm scale-105"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/85 to-transparent" />
         </div>
       )}
 
       {/* Hero Content */}
       <div className="relative z-10 p-6 sm:p-8 md:p-10 flex flex-col md:flex-row gap-6 md:gap-8 items-start">
         {/* Poster */}
-        <div className="w-44 sm:w-56 shrink-0 aspect-[2/3] rounded-2xl overflow-hidden bg-slate-950 border border-slate-700/80 shadow-2xl mx-auto md:mx-0 flex items-center justify-center">
+        <div className="w-44 sm:w-56 shrink-0 aspect-[2/3] rounded-2xl overflow-hidden bg-visagio-bg border border-visagio-border shadow-lg mx-auto md:mx-0 flex items-center justify-center">
           {movie.url_poster && !posterError ? (
             <img
               src={movie.url_poster}
@@ -55,8 +55,8 @@ export const MovieHero: React.FC<MovieHeroProps> = ({
             />
           ) : (
             <div className="p-6 text-center flex flex-col items-center justify-center">
-              <Film size={48} className="text-slate-600 mb-2" />
-              <span className="text-xs font-semibold text-slate-400">{movie.titulo}</span>
+              <Film size={48} className="text-visagio-muted mb-2" />
+              <span className="text-xs font-semibold text-visagio-muted">{movie.titulo}</span>
             </div>
           )}
         </div>
@@ -65,41 +65,41 @@ export const MovieHero: React.FC<MovieHeroProps> = ({
         <div className="flex-1 space-y-4 w-full">
           <div>
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+              <h1 className="text-2xl sm:text-4xl font-extrabold text-visagio-black tracking-tight">
                 {movie.titulo}
               </h1>
               {movie.ano_lancamento && (
-                <span className="text-xl sm:text-2xl text-slate-400 font-normal">
+                <span className="text-xl sm:text-2xl text-visagio-muted font-normal">
                   ({movie.ano_lancamento})
                 </span>
               )}
             </div>
 
             {/* Metadados linha secundária */}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:text-sm text-slate-300 mt-2">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:text-sm text-visagio-muted mt-2">
               {movie.diretor && (
-                <span className="flex items-center gap-1.5 font-medium">
-                  <User size={15} className="text-emerald-400" />
+                <span className="flex items-center gap-1.5 font-semibold text-visagio-black">
+                  <User size={15} className="text-amber-500" />
                   <span>Direção: {movie.diretor}</span>
                 </span>
               )}
 
               {movie.data_lancamento && (
-                <span className="flex items-center gap-1.5 text-slate-300">
-                  <Calendar size={14} className="text-emerald-400" />
+                <span className="flex items-center gap-1.5 font-medium text-visagio-black">
+                  <Calendar size={14} className="text-amber-500" />
                   <span>Lançamento: {formatDate(String(movie.data_lancamento))}</span>
                 </span>
               )}
 
               {movie.duracao_minutos && (
-                <span className="flex items-center gap-1 text-slate-400">
+                <span className="flex items-center gap-1 text-visagio-muted">
                   <Clock size={14} />
                   <span>{formatDuration(movie.duracao_minutos)}</span>
                 </span>
               )}
 
               {movie.status_filme && (
-                <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-slate-800 border border-slate-700 text-slate-300">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-visagio-bg border border-visagio-border text-visagio-black shadow-sm">
                   {movie.status_filme}
                 </span>
               )}
@@ -112,7 +112,7 @@ export const MovieHero: React.FC<MovieHeroProps> = ({
               {movie.generos.map((gen) => (
                 <span
                   key={gen}
-                  className="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800/90 text-slate-200 border border-slate-700"
+                  className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-visagio-bg text-visagio-black border border-visagio-border shadow-sm"
                 >
                   {gen}
                 </span>
@@ -132,10 +132,10 @@ export const MovieHero: React.FC<MovieHeroProps> = ({
           {/* Sinopse */}
           {movie.sinopse && (
             <div className="pt-2">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-visagio-muted mb-1">
                 Sinopse
               </h3>
-              <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-3xl">
+              <p className="text-sm sm:text-base text-[#222222] leading-relaxed max-w-3xl">
                 {movie.sinopse}
               </p>
             </div>
@@ -145,23 +145,23 @@ export const MovieHero: React.FC<MovieHeroProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs">
             {movie.atores && movie.atores.length > 0 && (
               <div>
-                <span className="text-slate-400 font-semibold block mb-1">Elenco principal:</span>
-                <span className="text-slate-300">{movie.atores.slice(0, 5).join(', ')}</span>
+                <span className="text-visagio-muted font-bold block mb-1">Elenco principal:</span>
+                <span className="text-visagio-black">{movie.atores.slice(0, 5).join(', ')}</span>
               </div>
             )}
             {movie.roteiristas && movie.roteiristas.length > 0 && (
               <div>
-                <span className="text-slate-400 font-semibold block mb-1">Roteiro:</span>
-                <span className="text-slate-300">{movie.roteiristas.slice(0, 3).join(', ')}</span>
+                <span className="text-visagio-muted font-bold block mb-1">Roteiro:</span>
+                <span className="text-visagio-black">{movie.roteiristas.slice(0, 3).join(', ')}</span>
               </div>
             )}
           </div>
 
           {/* Botões de Ação do Administrador */}
-          <div className="pt-4 flex flex-wrap items-center gap-3 border-t border-slate-800">
+          <div className="pt-4 flex flex-wrap items-center gap-3 border-t border-visagio-border">
             <button
               onClick={onOpenReviewModal}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition shadow-md shadow-emerald-500/20"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-visagio-yellow text-visagio-black hover:bg-visagio-yellowHover transition shadow-sm border border-visagio-yellowHover/60"
             >
               <MessageSquarePlus size={16} />
               <span>Avaliar Filme</span>
@@ -169,7 +169,7 @@ export const MovieHero: React.FC<MovieHeroProps> = ({
 
             <Link
               to={`/filmes/${movieId}/editar`}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-slate-800 border border-slate-700 text-slate-200 hover:text-white hover:bg-slate-750 transition"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-white border border-visagio-inputBorder text-visagio-black hover:bg-visagio-bg transition shadow-sm"
             >
               <Edit3 size={15} />
               <span>Editar Filme</span>
@@ -177,7 +177,7 @@ export const MovieHero: React.FC<MovieHeroProps> = ({
 
             <button
               onClick={onOpenDeleteModal}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-rose-950/40 border border-rose-800/50 text-rose-300 hover:bg-rose-900/60 hover:text-rose-100 transition"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 hover:text-rose-800 transition shadow-sm"
             >
               <Trash2 size={15} />
               <span>Excluir Filme</span>

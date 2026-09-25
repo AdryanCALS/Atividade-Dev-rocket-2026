@@ -4,22 +4,22 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        brand: {
-          dark: '#14181c',
-          card: '#1b2228',
-          border: '#2c3440',
-          accent: '#00e054',
-          accentHover: '#00b343',
-          muted: '#8e9da8',
-          orange: '#ff8000',
-          blue: '#40bcf4',
-        }
-      }
+        visagio: {
+          bg: '#F4F4F4',
+          card: '#FFFFFF',
+          black: '#0F0E0E',
+          yellow: '#FFD45A',
+          yellowHover: '#E6BF48',
+          yellowLight: '#FFF8E1',
+          muted: '#666666',
+          border: '#E5E5E5',
+          inputBorder: '#D4D4D4',
+        },
+      },
     },
   },
   plugins: [],
-}
+};

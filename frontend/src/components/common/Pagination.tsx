@@ -23,7 +23,6 @@ export const Pagination: React.FC<PaginationProps> = ({
   const inicio = (page - 1) * pageSize + 1;
   const fim = Math.min(page * pageSize, totalItems);
 
-
   // Calcula páginas visíveis (máximo de 5 páginas para não quebrar layout)
   const getVisiblePages = () => {
     const delta = 2;
@@ -53,20 +52,19 @@ export const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6 border-t border-slate-800 text-sm">
-      <div className="text-slate-400">
-        Mostrando <span className="font-semibold text-slate-200">{inicio}</span> a{' '}
-        <span className="font-semibold text-slate-200">{fim}</span> de{' '}
-        <span className="font-semibold text-slate-200">{totalItems}</span> {itemLabel}
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6 border-t border-visagio-border text-sm">
+      <div className="text-visagio-muted">
+        Mostrando <span className="font-semibold text-visagio-black">{inicio}</span> a{' '}
+        <span className="font-semibold text-visagio-black">{fim}</span> de{' '}
+        <span className="font-semibold text-visagio-black">{totalItems}</span> {itemLabel}
       </div>
-
 
       <div className="flex items-center gap-1.5">
         <button
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
           aria-label="Página anterior"
-          className="p-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="p-2 rounded-lg border border-visagio-border bg-white text-visagio-black hover:bg-visagio-bg hover:border-visagio-inputBorder disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
         >
           <ChevronLeft size={18} />
         </button>
@@ -74,7 +72,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         {getVisiblePages().map((p, idx) => {
           if (p === '...') {
             return (
-              <span key={`ellipsis-${idx}`} className="px-2 text-slate-500">
+              <span key={`ellipsis-${idx}`} className="px-2 text-visagio-muted">
                 …
               </span>
             );
@@ -88,10 +86,10 @@ export const Pagination: React.FC<PaginationProps> = ({
               key={`page-${pageNum}`}
               onClick={() => onPageChange(pageNum)}
               aria-current={isCurrent ? 'page' : undefined}
-              className={`min-w-9 h-9 px-2.5 rounded-lg text-sm font-medium transition ${
+              className={`min-w-9 h-9 px-2.5 rounded-lg text-sm font-medium transition shadow-sm ${
                 isCurrent
-                  ? 'bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/20'
-                  : 'border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
+                  ? 'bg-visagio-yellow text-visagio-black font-extrabold border border-visagio-yellowHover shadow-sm'
+                  : 'border border-visagio-border bg-white text-visagio-black hover:bg-visagio-bg hover:border-visagio-inputBorder'
               }`}
             >
               {pageNum}
@@ -103,7 +101,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages}
           aria-label="Próxima página"
-          className="p-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="p-2 rounded-lg border border-visagio-border bg-white text-visagio-black hover:bg-visagio-bg hover:border-visagio-inputBorder disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
         >
           <ChevronRight size={18} />
         </button>

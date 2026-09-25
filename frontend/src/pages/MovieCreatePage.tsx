@@ -26,17 +26,17 @@ export const MovieCreatePage: React.FC = () => {
       <div className="flex items-center gap-3">
         <Link
           to="/"
-          className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition"
+          className="p-2 rounded-xl bg-white border border-visagio-border text-visagio-muted hover:text-visagio-black hover:border-visagio-yellow transition shadow-sm"
           title="Voltar ao catálogo"
         >
           <ArrowLeft size={18} />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-            <Film size={22} className="text-emerald-400" />
+          <h1 className="text-2xl font-bold text-visagio-black tracking-tight flex items-center gap-2">
+            <Film size={22} className="text-visagio-yellow" />
             <span>Cadastrar Novo Filme</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-visagio-muted mt-0.5">
             Adicione um novo filme ao catálogo da RocketLab Movies
           </p>
         </div>

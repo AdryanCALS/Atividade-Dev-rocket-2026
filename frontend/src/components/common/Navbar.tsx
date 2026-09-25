@@ -6,16 +6,19 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800 bg-slate-900/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b border-visagio-border bg-white/95 backdrop-blur-md shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand */}
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-colors">
+          <div className="p-2 rounded-xl bg-visagio-yellow text-visagio-black border border-visagio-yellowHover/40 group-hover:scale-105 transition-transform shadow-sm">
             <Film size={22} />
           </div>
-          <div>
-            <span className="text-lg font-bold text-slate-100 tracking-tight flex items-center gap-1.5">
-              RocketLab <span className="text-emerald-400 text-sm font-semibold uppercase tracking-wider">Movies</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-lg font-extrabold text-visagio-black tracking-tight">
+              RocketLab
+            </span>
+            <span className="bg-visagio-black text-visagio-yellow text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shadow-sm">
+              Movies
             </span>
           </div>
         </Link>
@@ -24,10 +27,10 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center gap-3 sm:gap-4">
           <Link
             to="/"
-            className={`text-sm font-medium px-3 py-1.5 rounded-lg transition ${
+            className={`text-sm font-semibold px-3 py-1.5 rounded-lg transition ${
               location.pathname === '/'
-                ? 'text-emerald-400 bg-slate-800/80'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
+                ? 'text-visagio-black bg-visagio-bg border border-visagio-border'
+                : 'text-visagio-muted hover:text-visagio-black hover:bg-visagio-bg/80'
             }`}
           >
             Catálogo
@@ -35,7 +38,7 @@ export const Navbar: React.FC = () => {
 
           <Link
             to="/filmes/novo"
-            className="flex items-center gap-1.5 text-sm font-medium px-3.5 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-semibold hover:bg-emerald-400 transition shadow-sm shadow-emerald-500/20"
+            className="flex items-center gap-1.5 text-sm px-4 py-2 rounded-xl bg-visagio-yellow text-visagio-black font-bold hover:bg-visagio-yellowHover transition shadow-sm border border-visagio-yellowHover/50"
           >
             <PlusCircle size={16} />
             <span className="hidden sm:inline">Novo Filme</span>
@@ -44,11 +47,11 @@ export const Navbar: React.FC = () => {
 
           {/* Administrador Persona Badge */}
           <div
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs text-slate-300 font-medium select-none"
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-visagio-bg border border-visagio-border text-xs text-visagio-black font-medium select-none shadow-sm"
             title="Sessão ativa com privilégios de Administrador"
           >
-            <ShieldCheck size={14} className="text-emerald-400" />
-            <span className="hidden md:inline">Administrador</span>
+            <ShieldCheck size={14} className="text-visagio-black" />
+            <span className="hidden md:inline font-semibold">Administrador</span>
           </div>
         </div>
       </div>

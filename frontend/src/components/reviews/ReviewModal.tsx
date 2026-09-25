@@ -72,15 +72,15 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} title={`Avaliar: ${movieTitle}`} maxWidth="lg">
       <form onSubmit={handleSubmit} className="space-y-5">
         {errorMsg && (
-          <div className="p-3 bg-rose-950/60 border border-rose-800/80 rounded-xl text-rose-300 text-xs flex items-center gap-2">
-            <AlertCircle size={16} className="shrink-0 text-rose-400" />
+          <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-2">
+            <AlertCircle size={16} className="shrink-0 text-rose-600" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         {/* Nome do Autor */}
         <div>
-          <label htmlFor="review-author" className="block text-xs font-medium text-slate-300 mb-1.5">
+          <label htmlFor="review-author" className="block text-xs font-semibold text-visagio-black mb-1.5">
             Nome do Administrador / Autor *
           </label>
           <input
@@ -90,15 +90,15 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
             maxLength={120}
             value={nome}
             onChange={(e) => setNome(e.target.value)}
-            className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-emerald-500 transition"
+            className="w-full px-3.5 py-2 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black text-sm focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow transition"
             placeholder="Ex: Administrador"
           />
         </div>
 
         {/* Avaliação em Estrelas e Escala 0 a 10 */}
-        <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-4">
+        <div className="p-4 rounded-xl bg-visagio-bg border border-visagio-border space-y-4">
           <div className="flex items-center justify-between">
-            <label htmlFor="review-nota-range" className="text-xs font-semibold text-slate-300 uppercase tracking-wide">
+            <label htmlFor="review-nota-range" className="text-xs font-semibold text-visagio-black uppercase tracking-wide">
               Nota da Avaliação (0.0 a 10.0) *
             </label>
             <div
@@ -106,7 +106,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                 nota
               )}`}
             >
-              <Star size={16} className="fill-current text-amber-400" />
+              <Star size={16} className="fill-current text-visagio-yellow" />
               <span>{nota.toFixed(1)} / 10</span>
             </div>
           </div>
@@ -114,8 +114,8 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
           {/* Seletor Visual de 1 a 5 Estrelas */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-slate-400">Classificação em Estrelas:</span>
-              <span className="text-xs font-semibold text-amber-300">
+              <span className="text-xs text-visagio-muted">Classificação em Estrelas:</span>
+              <span className="text-xs font-bold text-visagio-black">
                 {(nota / 2).toFixed(1)} de 5 estrelas
               </span>
             </div>
@@ -135,16 +135,16 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                     }}
                     title={`Definir nota ${(starIdx * 2).toFixed(1)} (${starIdx} estrelas)`}
                     aria-label={`${starIdx} estrelas`}
-                    className="p-1 rounded-lg hover:bg-slate-800 transition transform hover:scale-110 focus:outline-none"
+                    className="p-1 rounded-lg hover:bg-white transition transform hover:scale-110 focus:outline-none"
                   >
                     <Star
                       size={26}
                       className={
                         isFilled
-                          ? 'fill-amber-400 text-amber-400 drop-shadow-sm'
+                          ? 'fill-visagio-yellow text-visagio-yellow drop-shadow-sm'
                           : isPartiallyFilled
-                          ? 'fill-amber-400/50 text-amber-400'
-                          : 'text-slate-600 hover:text-slate-400'
+                          ? 'fill-visagio-yellow/50 text-visagio-yellow'
+                          : 'text-slate-300 hover:text-visagio-yellow'
                       }
                     />
                   </button>
@@ -154,8 +154,8 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
           </div>
 
           {/* Slider e Input Decimal para Ajuste Fino */}
-          <div className="space-y-1.5 pt-2 border-t border-slate-800/80">
-            <span className="text-[11px] text-slate-400">Ajuste fino decimal (escala de 0.0 a 10.0):</span>
+          <div className="space-y-1.5 pt-2 border-t border-visagio-border">
+            <span className="text-[11px] text-visagio-muted">Ajuste fino decimal (escala de 0.0 a 10.0):</span>
             <div className="flex items-center gap-4">
               <input
                 id="review-nota-range"
@@ -169,7 +169,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                   setNota(val);
                   setNotaInput(String(val));
                 }}
-                className="flex-1 accent-emerald-500 cursor-pointer h-2 bg-slate-800 rounded-lg appearance-none"
+                className="flex-1 accent-visagio-yellow cursor-pointer h-2 bg-slate-200 rounded-lg appearance-none"
               />
               <input
                 id="review-nota"
@@ -197,12 +197,12 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                     setNotaInput(String(clamped));
                   }
                 }}
-                className="w-20 px-2 py-1 bg-slate-900 border border-slate-700 rounded-lg text-center text-sm font-semibold text-emerald-400 focus:outline-none focus:border-emerald-500"
+                className="w-20 px-2 py-1 bg-white border border-visagio-inputBorder rounded-lg text-center text-sm font-bold text-visagio-black focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow"
               />
             </div>
           </div>
 
-          <div className="flex justify-between text-[11px] text-slate-500 px-0.5">
+          <div className="flex justify-between text-[11px] text-visagio-muted px-0.5">
             <span>0.0 (Péssimo)</span>
             <span>5.0 (Médio)</span>
             <span>10.0 (Excelente)</span>
@@ -212,10 +212,10 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
         {/* Comentário / Resenha */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label htmlFor="review-comment" className="text-xs font-medium text-slate-300">
+            <label htmlFor="review-comment" className="text-xs font-semibold text-visagio-black">
               Resenha / Comentário *
             </label>
-            <span className="text-[11px] text-slate-500">{comentario.length} / 4000</span>
+            <span className="text-[11px] text-visagio-muted">{comentario.length} / 4000</span>
           </div>
           <textarea
             id="review-comment"
@@ -224,7 +224,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
             maxLength={4000}
             value={comentario}
             onChange={(e) => setComentario(e.target.value)}
-            className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-emerald-500 resize-y transition"
+            className="w-full px-3.5 py-2.5 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black placeholder-visagio-muted text-sm focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow resize-y transition"
             placeholder="Escreva seus comentários e impressões sobre o filme..."
           />
         </div>
@@ -235,18 +235,18 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
             type="button"
             onClick={onClose}
             disabled={mutation.isPending}
-            className="px-4 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="px-4 py-2 rounded-xl text-sm font-medium text-visagio-muted hover:text-visagio-black hover:bg-visagio-bg transition"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={mutation.isPending}
-            className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold bg-emerald-500 text-slate-950 hover:bg-emerald-400 disabled:opacity-50 transition shadow-md shadow-emerald-500/20"
+            className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold bg-visagio-yellow text-visagio-black hover:bg-visagio-yellowHover disabled:opacity-50 transition shadow-sm"
           >
             {mutation.isPending ? (
               <>
-                <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-visagio-black border-t-transparent rounded-full animate-spin" />
                 <span>Enviando...</span>
               </>
             ) : (
