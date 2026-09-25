@@ -18,8 +18,9 @@ export const Pagination: React.FC<PaginationProps> = ({
 }) => {
   if (totalPages <= 1) return null;
 
-  const startItem = (page - 1) * pageSize + 1;
-  const endItem = Math.min(page * pageSize, totalItems);
+  const inicio = (page - 1) * pageSize + 1;
+  const fim = Math.min(page * pageSize, totalItems);
+
 
   // Calcula páginas visíveis (máximo de 5 páginas para não quebrar layout)
   const getVisiblePages = () => {
@@ -52,10 +53,11 @@ export const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6 border-t border-slate-800 text-sm">
       <div className="text-slate-400">
-        Mostrando <span className="font-semibold text-slate-200">{startItem}</span> a{' '}
-        <span className="font-semibold text-slate-200">{endItem}</span> de{' '}
+        Mostrando <span className="font-semibold text-slate-200">{inicio}</span> a{' '}
+        <span className="font-semibold text-slate-200">{fim}</span> de{' '}
         <span className="font-semibold text-slate-200">{totalItems}</span> filmes
       </div>
+
 
       <div className="flex items-center gap-1.5">
         <button

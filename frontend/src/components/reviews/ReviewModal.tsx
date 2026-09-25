@@ -22,15 +22,16 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
 
   const [nome, setNome] = useState('Administrador');
   const [nota, setNota] = useState<number>(8.0);
+  const [notaInput, setNotaInput] = useState<string>('8.0');
   const [comentario, setComentario] = useState('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const mutation = useMutation({
     mutationFn: (payload: ReviewCreate) => addReviewToMovie(movieId, payload),
     onSuccess: () => {
-      // Invalida os detalhes do filme e as avaliações para recalcular média geral e atualizar lista
-      queryClient.invalidateQueries({ queryKey: ['movie', movieId] });
-      queryClient.invalidateQueries({ queryKey: ['reviews', movieId] });
+      // Invalida todas as consultas de filme e avaliações para recalcular média geral e atualizar lista
+      queryClient.invalidateQueries({ queryKey: ['movie'] });
+      queryClient.invalidateQueries({ queryKey: ['reviews'] });
       queryClient.invalidateQueries({ queryKey: ['movies'] });
       setComentario('');
       setErrorMsg(null);
@@ -40,6 +41,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
       setErrorMsg(err.message || 'Falha ao registrar avaliação.');
     },
   });
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -121,7 +123,11 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
               max="10"
               step="0.5"
               value={nota}
-              onChange={(e) => setNota(parseFloat(e.target.value))}
+              onChange={(e) => {
+                const val = parseFloat(e.target.value);
+                setNota(val);
+                setNotaInput(String(val));
+              }}
               className="flex-1 accent-emerald-500 cursor-pointer h-2 bg-slate-800 rounded-lg appearance-none"
             />
             <input
@@ -130,10 +136,25 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
               min="0"
               max="10"
               step="0.1"
-              value={nota}
+              value={notaInput}
               onChange={(e) => {
-                const val = parseFloat(e.target.value);
-                if (!isNaN(val)) setNota(Math.min(10, Math.max(0, val)));
+                const str = e.target.value;
+                setNotaInput(str);
+                const val = parseFloat(str);
+                if (!isNaN(val)) {
+                  setNota(Math.min(10, Math.max(0, val)));
+                }
+              }}
+              onBlur={() => {
+                const val = parseFloat(notaInput);
+                if (isNaN(val)) {
+                  setNota(8.0);
+                  setNotaInput('8.0');
+                } else {
+                  const clamped = Math.min(10, Math.max(0, val));
+                  setNota(clamped);
+                  setNotaInput(String(clamped));
+                }
               }}
               className="w-20 px-2 py-1 bg-slate-900 border border-slate-700 rounded-lg text-center text-sm font-semibold text-emerald-400 focus:outline-none focus:border-emerald-500"
             />
@@ -141,9 +162,10 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
           <div className="flex justify-between text-[11px] text-slate-500 px-0.5">
             <span>0.0 (Péssimo)</span>
             <span>5.0 (Médio)</span>
-            <span>10.0 (Obra-prima)</span>
+            <span>10.0 (Excelente)</span>
           </div>
         </div>
+
 
         {/* Comentário / Resenha */}
         <div>
