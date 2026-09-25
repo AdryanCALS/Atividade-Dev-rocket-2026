@@ -6,7 +6,7 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import insert
+from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.logging import get_logger
@@ -162,7 +162,7 @@ async def run_seed(
         if r.get("sk_genre_id") and r.get("nome_genero")
     ]
     if genres_data:
-        await session.execute(insert(DimGenre), genres_data)
+        await session.execute(sqlite_insert(DimGenre).on_conflict_do_nothing(), genres_data)
 
     # DimCompany
     companies_data = [
@@ -171,7 +171,7 @@ async def run_seed(
         if r.get("sk_company_id") and r.get("nome_produtora")
     ]
     if companies_data:
-        await session.execute(insert(DimCompany), companies_data)
+        await session.execute(sqlite_insert(DimCompany).on_conflict_do_nothing(), companies_data)
 
     # DimPerson (deduplicated by sk_person_id)
     seen_people = set()
@@ -188,7 +188,7 @@ async def run_seed(
                 }
             )
     if people_data:
-        await session.execute(insert(DimPerson), people_data)
+        await session.execute(sqlite_insert(DimPerson).on_conflict_do_nothing(), people_data)
 
     # DimMovie
     movies_data = [
@@ -208,12 +208,12 @@ async def run_seed(
         if r.get("sk_movie_id")
     ]
     if movies_data:
-        await session.execute(insert(DimMovie), movies_data)
+        await session.execute(sqlite_insert(DimMovie).on_conflict_do_nothing(), movies_data)
 
     # Bridges
     if movie_genres_raw:
         await session.execute(
-            insert(bridge_movie_genre),
+            sqlite_insert(bridge_movie_genre).on_conflict_do_nothing(),
             [
                 {"sk_movie_id": r["sk_movie_id"], "sk_genre_id": r["sk_genre_id"]}
                 for r in movie_genres_raw
@@ -222,7 +222,7 @@ async def run_seed(
 
     if movie_companies_raw:
         await session.execute(
-            insert(bridge_movie_company),
+            sqlite_insert(bridge_movie_company).on_conflict_do_nothing(),
             [
                 {"sk_movie_id": r["sk_movie_id"], "sk_company_id": r["sk_company_id"]}
                 for r in movie_companies_raw
@@ -231,7 +231,7 @@ async def run_seed(
 
     if movie_people_raw:
         await session.execute(
-            insert(bridge_movie_person),
+            sqlite_insert(bridge_movie_person).on_conflict_do_nothing(),
             [
                 {"sk_movie_id": r["sk_movie_id"], "sk_person_id": r["sk_person_id"]}
                 for r in movie_people_raw
@@ -258,7 +258,9 @@ async def run_seed(
         if r.get("sk_movie_id")
     ]
     if perf_data:
-        await session.execute(insert(FactMoviePerformance), perf_data)
+        await session.execute(
+            sqlite_insert(FactMoviePerformance).on_conflict_do_nothing(), perf_data
+        )
 
     # DimReview
     summaries_data = [
@@ -272,7 +274,7 @@ async def run_seed(
         if r.get("sk_movie_id")
     ]
     if summaries_data:
-        await session.execute(insert(DimReview), summaries_data)
+        await session.execute(sqlite_insert(DimReview).on_conflict_do_nothing(), summaries_data)
 
     # MovieReview
     reviews_data = [
@@ -287,7 +289,7 @@ async def run_seed(
         if r.get("sk_movie_id") and r.get("sk_movie_review_id")
     ]
     if reviews_data:
-        await session.execute(insert(MovieReview), reviews_data)
+        await session.execute(sqlite_insert(MovieReview).on_conflict_do_nothing(), reviews_data)
 
     await session.commit()
     logger.info("Seed concluído com sucesso! %d filmes populados.", len(movies_data))
@@ -304,13 +306,24 @@ async def main() -> None:
     parser.add_argument(
         "--data-dir", type=str, default=None, help="Caminho para o diretório dos arquivos CSV"
     )
+    parser.add_argument(
+        "--reset",
+        action="store_true",
+        help="Limpa e recria todas as tabelas antes de popular os dados",
+    )
     args = parser.parse_args()
 
     sample_size = None if args.full else args.sample
 
-    # Ensure tables exist
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    # Ensure tables exist (or recreate if --reset is requested)
+    if args.reset:
+        logger.info("Recriando tabelas do banco de dados (--reset)...")
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.drop_all)
+            await conn.run_sync(Base.metadata.create_all)
+    else:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
 
     async with AsyncSessionLocal() as session:
         await run_seed(session=session, sample_size=sample_size, data_dir=args.data_dir)

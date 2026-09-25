@@ -30,3 +30,23 @@ async def test_seed_sample_populates_database(db_session: AsyncSession) -> None:
         await db_session.execute(select(func.count(DimReview.sk_review_id)))
     ).scalar()
     assert review_summary_count is not None and review_summary_count > 0
+
+
+@pytest.mark.asyncio
+async def test_seed_is_idempotent_when_run_multiple_times(db_session: AsyncSession) -> None:
+    # First seed run
+    await run_seed(
+        session=db_session,
+        sample_size=3,
+        data_dir="../data",
+    )
+
+    # Second seed run should not throw IntegrityError
+    await run_seed(
+        session=db_session,
+        sample_size=3,
+        data_dir="../data",
+    )
+
+    movie_count = (await db_session.execute(select(func.count(DimMovie.sk_movie_id)))).scalar()
+    assert movie_count == 3
