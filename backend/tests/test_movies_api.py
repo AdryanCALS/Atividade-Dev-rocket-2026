@@ -1,5 +1,6 @@
 import pytest
 from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 @pytest.mark.asyncio
@@ -93,6 +94,51 @@ async def test_list_movies_pagination_and_search(client: AsyncClient) -> None:
     assert search_dir.status_code == 200
     dir_data = search_dir.json()
     assert dir_data["total"] == 2
+
+
+@pytest.mark.asyncio
+async def test_search_by_director_ignores_non_directors(
+    client: AsyncClient, db_session: AsyncSession
+) -> None:
+    from app.movies.models import DimPerson, bridge_movie_person
+
+    # Create movie with a director
+    resp = await client.post(
+        "/api/v1/movies",
+        json={
+            "titulo": "Clube da Luta",
+            "diretor": "David Fincher",
+            "ano_lancamento": 1999,
+            "generos": ["Drama"],
+            "sinopse": "Um homem deprimido que sofre de insônia...",
+        },
+    )
+    assert resp.status_code == 201
+    movie_id = resp.json()["sk_movie_id"]
+
+    # Manually attach an Actor to this movie
+    actor = DimPerson(nome_pessoa="Brad Pitt", tipo_pessoa="Ator")
+    db_session.add(actor)
+    await db_session.flush()
+
+    await db_session.execute(
+        bridge_movie_person.insert().values(
+            sk_movie_id=movie_id,
+            sk_person_id=actor.sk_person_id,
+        )
+    )
+    await db_session.commit()
+
+    # Search for the Director should match
+    search_director = await client.get("/api/v1/movies?q=Fincher")
+    assert search_director.status_code == 200
+    assert search_director.json()["total"] == 1
+
+    # Search for the Actor should NOT match director subquery
+    search_actor = await client.get("/api/v1/movies?q=Brad Pitt")
+    assert search_actor.status_code == 200
+    assert search_actor.json()["total"] == 0
+
 
 
 @pytest.mark.asyncio

@@ -17,97 +17,24 @@ from app.movies.schemas import (
     MovieCreate,
     MovieDetailResponse,
     MovieListItem,
-    MoviePerformanceResponse,
     MovieUpdate,
     ReviewCreate,
     ReviewResponse,
-    ReviewSummaryResponse,
 )
 
 
-def _build_movie_list_item(movie: DimMovie) -> MovieListItem:
-    director_name: str | None = None
-    for person in movie.people:
-        if person.tipo_pessoa == "Diretor":
-            director_name = person.nome_pessoa
-            break
-
-    genres = [g.nome_genero for g in movie.genres]
-    summary = (
-        ReviewSummaryResponse(
-            qtd_avaliacoes_usuarios=movie.reviews_summary.qtd_avaliacoes_usuarios,
-            nota_media_usuarios=movie.reviews_summary.nota_media_usuarios,
-        )
-        if movie.reviews_summary
-        else ReviewSummaryResponse(qtd_avaliacoes_usuarios=0, nota_media_usuarios=None)
-    )
-
-    return MovieListItem(
-        sk_movie_id=movie.sk_movie_id,
-        id_filme=movie.id_filme,
-        titulo=movie.titulo,
-        diretor=director_name,
-        ano_lancamento=movie.ano_lancamento,
-        data_lancamento=movie.data_lancamento,
-        duracao_minutos=movie.duracao_minutos,
-        sinopse=movie.sinopse,
-        url_poster=movie.url_poster,
-        generos=genres,
-        reviews_summary=summary,
-    )
+def build_movie_list_item(movie: DimMovie) -> MovieListItem:
+    return MovieListItem.from_orm_movie(movie)
 
 
-def _build_movie_detail(movie: DimMovie) -> MovieDetailResponse:
-    director_name: str | None = None
-    actors: list[str] = []
-    writers: list[str] = []
+def build_movie_detail(movie: DimMovie) -> MovieDetailResponse:
+    return MovieDetailResponse.from_orm_movie(movie)
 
-    for person in movie.people:
-        if person.tipo_pessoa == "Diretor" and not director_name:
-            director_name = person.nome_pessoa
-        elif person.tipo_pessoa == "Ator":
-            actors.append(person.nome_pessoa)
-        elif person.tipo_pessoa == "Roteirista":
-            writers.append(person.nome_pessoa)
 
-    genres = [g.nome_genero for g in movie.genres]
-    summary = (
-        ReviewSummaryResponse(
-            qtd_avaliacoes_usuarios=movie.reviews_summary.qtd_avaliacoes_usuarios,
-            nota_media_usuarios=movie.reviews_summary.nota_media_usuarios,
-        )
-        if movie.reviews_summary
-        else ReviewSummaryResponse(qtd_avaliacoes_usuarios=0, nota_media_usuarios=None)
-    )
+# Aliases for backwards compatibility
+_build_movie_list_item = build_movie_list_item
+_build_movie_detail = build_movie_detail
 
-    performance = (
-        MoviePerformanceResponse.model_validate(movie.performance) if movie.performance else None
-    )
-
-    recent_reviews = [
-        ReviewResponse.model_validate(rev)
-        for rev in sorted(movie.reviews, key=lambda r: r.created_at, reverse=True)[:10]
-    ]
-
-    return MovieDetailResponse(
-        sk_movie_id=movie.sk_movie_id,
-        id_filme=movie.id_filme,
-        titulo=movie.titulo,
-        diretor=director_name,
-        ano_lancamento=movie.ano_lancamento,
-        data_lancamento=movie.data_lancamento,
-        duracao_minutos=movie.duracao_minutos,
-        sinopse=movie.sinopse,
-        url_poster=movie.url_poster,
-        url_backdrop=movie.url_backdrop,
-        status_filme=movie.status_filme,
-        generos=genres,
-        atores=actors,
-        roteiristas=writers,
-        reviews_summary=summary,
-        performance=performance,
-        recent_reviews=recent_reviews,
-    )
 
 
 async def get_or_create_genre(session: AsyncSession, name: str) -> DimGenre:
@@ -258,7 +185,10 @@ async def list_movies(
         director_subquery = (
             select(bridge_movie_person.c.sk_movie_id)
             .join(DimPerson, DimPerson.sk_person_id == bridge_movie_person.c.sk_person_id)
-            .where(DimPerson.nome_pessoa.ilike(term))
+            .where(
+                DimPerson.nome_pessoa.ilike(term),
+                DimPerson.tipo_pessoa == "Diretor",
+            )
         )
         genre_subquery = (
             select(bridge_movie_genre.c.sk_movie_id)
@@ -305,7 +235,7 @@ async def list_movies(
 
     result = await session.execute(stmt)
     movies = result.scalars().all()
-    items = [_build_movie_list_item(m) for m in movies]
+    items = [build_movie_list_item(m) for m in movies]
     return items, total
 
 

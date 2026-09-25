@@ -1,6 +1,6 @@
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Annotated
+from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -10,6 +10,15 @@ class ReviewSummaryResponse(BaseModel):
 
     qtd_avaliacoes_usuarios: int = 0
     nota_media_usuarios: float | None = None
+
+    @classmethod
+    def from_summary(cls, summary: Any | None) -> "ReviewSummaryResponse":
+        if summary:
+            return cls(
+                qtd_avaliacoes_usuarios=summary.qtd_avaliacoes_usuarios,
+                nota_media_usuarios=summary.nota_media_usuarios,
+            )
+        return cls(qtd_avaliacoes_usuarios=0, nota_media_usuarios=None)
 
 
 class ReviewBase(BaseModel):
@@ -91,6 +100,31 @@ class MovieListItem(BaseModel):
     generos: list[str] = []
     reviews_summary: ReviewSummaryResponse = Field(default_factory=ReviewSummaryResponse)
 
+    @classmethod
+    def from_orm_movie(cls, movie: Any) -> "MovieListItem":
+        director_name: str | None = None
+        for person in movie.people:
+            if person.tipo_pessoa == "Diretor":
+                director_name = person.nome_pessoa
+                break
+
+        genres = [g.nome_genero for g in movie.genres]
+        summary = ReviewSummaryResponse.from_summary(movie.reviews_summary)
+
+        return cls(
+            sk_movie_id=movie.sk_movie_id,
+            id_filme=movie.id_filme,
+            titulo=movie.titulo,
+            diretor=director_name,
+            ano_lancamento=movie.ano_lancamento,
+            data_lancamento=movie.data_lancamento,
+            duracao_minutos=movie.duracao_minutos,
+            sinopse=movie.sinopse,
+            url_poster=movie.url_poster,
+            generos=genres,
+            reviews_summary=summary,
+        )
+
 
 class MovieDetailResponse(MovieListItem):
     url_backdrop: str | None = None
@@ -99,6 +133,53 @@ class MovieDetailResponse(MovieListItem):
     roteiristas: list[str] = []
     performance: MoviePerformanceResponse | None = None
     recent_reviews: list[ReviewResponse] = []
+
+    @classmethod
+    def from_orm_movie(cls, movie: Any) -> "MovieDetailResponse":
+        director_name: str | None = None
+        actors: list[str] = []
+        writers: list[str] = []
+
+        for person in movie.people:
+            if person.tipo_pessoa == "Diretor" and not director_name:
+                director_name = person.nome_pessoa
+            elif person.tipo_pessoa == "Ator":
+                actors.append(person.nome_pessoa)
+            elif person.tipo_pessoa == "Roteirista":
+                writers.append(person.nome_pessoa)
+
+        genres = [g.nome_genero for g in movie.genres]
+        summary = ReviewSummaryResponse.from_summary(movie.reviews_summary)
+        performance = (
+            MoviePerformanceResponse.model_validate(movie.performance)
+            if movie.performance
+            else None
+        )
+        recent_reviews = [
+            ReviewResponse.model_validate(rev)
+            for rev in sorted(movie.reviews, key=lambda r: r.created_at, reverse=True)[:10]
+        ]
+
+        return cls(
+            sk_movie_id=movie.sk_movie_id,
+            id_filme=movie.id_filme,
+            titulo=movie.titulo,
+            diretor=director_name,
+            ano_lancamento=movie.ano_lancamento,
+            data_lancamento=movie.data_lancamento,
+            duracao_minutos=movie.duracao_minutos,
+            sinopse=movie.sinopse,
+            url_poster=movie.url_poster,
+            url_backdrop=movie.url_backdrop,
+            status_filme=movie.status_filme,
+            generos=genres,
+            atores=actors,
+            roteiristas=writers,
+            reviews_summary=summary,
+            performance=performance,
+            recent_reviews=recent_reviews,
+        )
+
 
 
 class PaginatedMoviesResponse(BaseModel):

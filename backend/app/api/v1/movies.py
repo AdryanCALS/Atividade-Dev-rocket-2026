@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
 from app.movies import service
+from app.movies.models import DimMovie
 from app.movies.schemas import (
     MovieCreate,
     MovieDetailResponse,
@@ -17,6 +18,19 @@ from app.movies.schemas import (
 )
 
 router = APIRouter()
+
+
+async def get_valid_movie(
+    movie_id: str,
+    db: AsyncSession = Depends(get_db),
+) -> DimMovie:
+    movie = await service.get_movie_by_id(session=db, identifier=movie_id)
+    if not movie:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Filme com identificador '{movie_id}' não encontrado.",
+        )
+    return movie
 
 
 @router.get("", response_model=PaginatedMoviesResponse, summary="Listar catálogo paginado")
@@ -59,52 +73,33 @@ async def create_movie(
     db: AsyncSession = Depends(get_db),
 ) -> MovieListItem:
     movie = await service.create_movie(session=db, data=payload)
-    return service._build_movie_list_item(movie)
+    return service.build_movie_list_item(movie)
 
 
 @router.get(
     "/{movie_id}", response_model=MovieDetailResponse, summary="Obter detalhes completos do filme"
 )
 async def get_movie(
-    movie_id: str,
-    db: AsyncSession = Depends(get_db),
+    movie: DimMovie = Depends(get_valid_movie),
 ) -> MovieDetailResponse:
-    movie = await service.get_movie_by_id(session=db, identifier=movie_id)
-    if not movie:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Filme com identificador '{movie_id}' não encontrado.",
-        )
-    return service._build_movie_detail(movie)
+    return service.build_movie_detail(movie)
 
 
 @router.put("/{movie_id}", response_model=MovieDetailResponse, summary="Atualizar filme")
 async def update_movie(
-    movie_id: str,
     payload: MovieUpdate,
+    movie: DimMovie = Depends(get_valid_movie),
     db: AsyncSession = Depends(get_db),
 ) -> MovieDetailResponse:
-    movie = await service.get_movie_by_id(session=db, identifier=movie_id)
-    if not movie:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Filme com identificador '{movie_id}' não encontrado.",
-        )
     updated = await service.update_movie(session=db, movie=movie, data=payload)
-    return service._build_movie_detail(updated)
+    return service.build_movie_detail(updated)
 
 
 @router.delete("/{movie_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Remover filme")
 async def delete_movie(
-    movie_id: str,
+    movie: DimMovie = Depends(get_valid_movie),
     db: AsyncSession = Depends(get_db),
 ) -> None:
-    movie = await service.get_movie_by_id(session=db, identifier=movie_id)
-    if not movie:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Filme com identificador '{movie_id}' não encontrado.",
-        )
     await service.delete_movie(session=db, movie=movie)
 
 
@@ -115,16 +110,10 @@ async def delete_movie(
     summary="Adicionar avaliação a um filme",
 )
 async def add_review(
-    movie_id: str,
     payload: ReviewCreate,
+    movie: DimMovie = Depends(get_valid_movie),
     db: AsyncSession = Depends(get_db),
 ) -> ReviewResponse:
-    movie = await service.get_movie_by_id(session=db, identifier=movie_id)
-    if not movie:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Filme com identificador '{movie_id}' não encontrado.",
-        )
     return await service.add_review_to_movie(session=db, movie=movie, data=payload)
 
 
@@ -134,17 +123,11 @@ async def add_review(
     summary="Listar avaliações paginadas do filme",
 )
 async def list_reviews(
-    movie_id: str,
+    movie: DimMovie = Depends(get_valid_movie),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
 ) -> PaginatedReviewsResponse:
-    movie = await service.get_movie_by_id(session=db, identifier=movie_id)
-    if not movie:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Filme com identificador '{movie_id}' não encontrado.",
-        )
     items, total = await service.list_reviews_by_movie(
         session=db, movie=movie, page=page, page_size=page_size
     )
@@ -156,3 +139,4 @@ async def list_reviews(
         page_size=page_size,
         total_pages=total_pages,
     )
+
