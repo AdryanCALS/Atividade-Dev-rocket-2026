@@ -197,7 +197,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                     setNotaInput(String(clamped));
                   }
                 }}
-                className="w-20 px-2 py-1 bg-white border border-visagio-inputBorder rounded-lg text-center text-sm font-bold text-visagio-black focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow"
+                className="w-20 px-2 py-1 bg-white border border-visagio-inputBorder rounded-lg text-center text-sm font-bold text-visagio-black focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow no-spinner [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
           </div>

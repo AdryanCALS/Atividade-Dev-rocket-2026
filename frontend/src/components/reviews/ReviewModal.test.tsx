@@ -47,6 +47,7 @@ describe('ReviewModal', () => {
     expect(screen.getByDisplayValue('Administrador')).toBeInTheDocument();
     expect(screen.getByText('8.0 / 10')).toBeInTheDocument();
     expect(screen.getByText(/4\.0 de 5 estrelas/)).toBeInTheDocument();
+    expect(screen.getByRole('spinbutton')).toHaveClass('no-spinner');
   });
 
   it('deve atualizar a nota ao clicar em uma estrela do seletor', () => {

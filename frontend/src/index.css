@@ -12,3 +12,28 @@ body {
   background-color: #F4F4F4;
   color: #0F0E0E;
 }
+
+/* Remove setas de incremento/decremento (spin buttons) de inputs numéricos */
+@layer utilities {
+  .no-spinner::-webkit-inner-spin-button,
+  .no-spinner::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .no-spinner {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+}
+
+input.no-spinner {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input.no-spinner::-webkit-outer-spin-button,
+input.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+

@@ -176,7 +176,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                 value={formData.ano_lancamento}
                 onChange={(e) => updateField('ano_lancamento', e.target.value)}
                 placeholder="Ex: 1972"
-                className="w-full px-3.5 py-2 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black placeholder-visagio-muted focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow text-sm"
+                className="w-full px-3.5 py-2 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black placeholder-visagio-muted focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow text-sm no-spinner [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
 
@@ -205,7 +205,7 @@ export const MovieForm: React.FC<MovieFormProps> = ({
                 value={formData.duracao_minutos}
                 onChange={(e) => updateField('duracao_minutos', e.target.value)}
                 placeholder="Ex: 175"
-                className="w-full px-3.5 py-2 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black placeholder-visagio-muted focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow text-sm"
+                className="w-full px-3.5 py-2 bg-white border border-visagio-inputBorder rounded-xl text-visagio-black placeholder-visagio-muted focus:outline-none focus:border-visagio-yellow focus:ring-1 focus:ring-visagio-yellow text-sm no-spinner [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
           </div>
