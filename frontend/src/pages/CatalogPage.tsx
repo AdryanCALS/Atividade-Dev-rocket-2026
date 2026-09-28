@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Search, SlidersHorizontal, X, Film, AlertCircle, RefreshCw } from 'lucide-react';
@@ -17,23 +17,40 @@ export const CatalogPage: React.FC = () => {
 
   const [searchInput, setSearchInput] = useState(urlQ);
   const debouncedSearch = useDebounce(searchInput, 350);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const isFirstMount = useRef(true);
+  const skipSyncRef = useRef(false);
 
-  // Sincroniza o debouncedSearch de volta na URL
+  // Sincroniza o debouncedSearch na URL apenas quando o usuário digita
   useEffect(() => {
-    const currentQ = searchParams.get('q') || '';
-    if (debouncedSearch !== currentQ) {
-      const nextParams = new URLSearchParams(searchParams);
-      if (debouncedSearch.trim()) {
-        nextParams.set('q', debouncedSearch.trim());
-      } else {
-        nextParams.delete('q');
-      }
-      nextParams.set('page', '1'); // Reset para página 1 em nova busca
-      setSearchParams(nextParams, { replace: true });
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
     }
-  }, [debouncedSearch, searchParams, setSearchParams]);
 
-  // Mantém o input sincronizado se a URL mudar externamente (ex: botão voltar)
+    if (skipSyncRef.current) {
+      skipSyncRef.current = false;
+      return;
+    }
+
+    const currentQ = searchParams.get('q') || '';
+    const trimmed = debouncedSearch.trim();
+
+    if (trimmed !== currentQ) {
+      setSearchParams((prev) => {
+        const nextParams = new URLSearchParams(prev);
+        if (trimmed) {
+          nextParams.set('q', trimmed);
+        } else {
+          nextParams.delete('q');
+        }
+        nextParams.set('page', '1');
+        return nextParams;
+      }, { replace: true });
+    }
+  }, [debouncedSearch]);
+
+  // Mantém o input sincronizado se a URL mudar externamente (ex: botão voltar do navegador)
   useEffect(() => {
     setSearchInput(urlQ);
   }, [urlQ]);
@@ -72,11 +89,15 @@ export const CatalogPage: React.FC = () => {
   };
 
   const handleClearSearch = () => {
+    skipSyncRef.current = true;
     setSearchInput('');
-    const nextParams = new URLSearchParams(searchParams);
-    nextParams.delete('q');
-    nextParams.set('page', '1');
-    setSearchParams(nextParams);
+    setSearchParams((prev) => {
+      const nextParams = new URLSearchParams(prev);
+      nextParams.delete('q');
+      nextParams.set('page', '1');
+      return nextParams;
+    }, { replace: true });
+    searchInputRef.current?.focus();
   };
 
   return (
@@ -87,6 +108,7 @@ export const CatalogPage: React.FC = () => {
         <div className="relative flex-1 max-w-lg">
           <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-visagio-muted" />
           <input
+            ref={searchInputRef}
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -95,9 +117,11 @@ export const CatalogPage: React.FC = () => {
           />
           {searchInput && (
             <button
+              type="button"
               onClick={handleClearSearch}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-visagio-muted hover:text-visagio-black p-0.5 rounded transition"
+              aria-label="Limpar campo de busca"
               title="Limpar busca"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-visagio-muted hover:text-visagio-black p-1 rounded-lg hover:bg-visagio-bg transition"
             >
               <X size={16} />
             </button>
@@ -188,8 +212,9 @@ export const CatalogPage: React.FC = () => {
           </p>
           {urlQ && (
             <button
+              type="button"
               onClick={handleClearSearch}
-              className="mt-4 px-4 py-2 bg-visagio-yellow text-visagio-black font-semibold rounded-lg text-sm hover:bg-visagio-yellowHover transition"
+              className="mt-4 px-4 py-2 bg-visagio-yellow text-visagio-black font-semibold rounded-lg text-sm hover:bg-visagio-yellowHover transition shadow-sm"
             >
               Limpar busca
             </button>
